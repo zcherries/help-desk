@@ -1,7 +1,11 @@
 var express = require('express');
 var serverHelpers = require('./server-helpers.js');
+var bodyParser = require('body-parser');
 
 var app = express();
+
+// external middleware
+app.use(bodyParser.json());
 
 // for debugging
 app.use(serverHelpers.printReqInfo);
