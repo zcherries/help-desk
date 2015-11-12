@@ -3,9 +3,14 @@ var serverHelpers = require('./server-helpers.js');
 
 var app = express();
 
+// for debugging
 app.use(serverHelpers.printReqInfo);
 
+// static files
 app.use(express.static('public'));
+
+// handle 404
+app.use(serverHelpers.handle404);
 
 app.listen(8000);
 console.log('listening on port http://localhost:8000');
