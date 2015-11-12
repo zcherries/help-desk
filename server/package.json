@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "project-november backend dependencies",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wpcarro/project-november.git"
+  },
+  "author": "EarthWindandJS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wpcarro/project-november/issues"
+  },
+  "homepage": "https://github.com/wpcarro/project-november#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  }
+}
