@@ -77,7 +77,7 @@ app.post('/data/delete', function(req, res, next) {
 });
 
 // static files
-app.use(express.static('public'));
+app.use(express.static('../public'));
 
 // handle 404
 app.use(serverHelpers.handle404);
