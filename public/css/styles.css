@@ -1,0 +1,24 @@
+.db-entry {
+	-moz-box-sizing: border-box;
+  box-sizing: border-box;
+	padding: 7px 10px;
+	margin: 5px;
+	display: inline-block;
+	font-family: monospace;
+	border-radius: 3px;
+	background-color: #DEDEDE;
+	color: #302F33;
+	cursor: default;
+}
+
+.db-entry:hover {
+	background-color: #E6E6E6;
+}
+
+.delete {
+	margin-left: 10px;
+}
+.delete:hover {
+	color: red;
+	cursor: pointer;
+}
