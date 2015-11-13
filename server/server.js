@@ -1,5 +1,6 @@
-var express = require('express');
 var serverHelpers = require('./server-helpers.js');
+var express = require('express');
+var http = require('http');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var dbHelpers = require('./db/db-helpers.js');
@@ -7,12 +8,38 @@ var HelpRequest = dbHelpers.HelpRequest;
 var helpReqSchema = dbHelpers.helpReqSchema;
 
 var app = express();
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+var PORT = 8000;
 
 // external middleware
 app.use(bodyParser());
 
 // internal middleware
 app.use(serverHelpers.printReqInfo);
+
+
+
+/* -- BEGIN socket IO -- */
+
+var handleEntryAdded;
+var handleEntryDeleted;
+var socketRef;
+
+io.on('connection', function (socket) {
+	console.log('new connection!');
+	socketRef = socket;
+	console.log('socketRef: ' + socketRef);
+
+  socket.emit('news', { hello: 'world' });
+
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
+/* -- END socket IO -- */
+
+
 
 /* -- BEGIN mongo setup --*/
 mongoose.connect('mongodb://localhost/test');
@@ -25,6 +52,9 @@ db.once('open', function(callback) {
 });
 /* -- END mongo setup -- */
 
+
+
+/* -- BEGIN http server -- */
 app.post('/', function(req, res, next) {
 	// might be able to data validate client-side
 	if(!dbHelpers.isSubmissionValid(req.body)) {
@@ -34,6 +64,7 @@ app.post('/', function(req, res, next) {
 	var newHelpRequest = new HelpRequest(req.body);
 	newHelpRequest.save(function(err, newHelpRequest) {
 		if(err) return console.error(err);
+		socketRef.emit('entry-added', { entryAdded: 'testing' })
 		newHelpRequest.speak();
 		res.send(req.body);
 	});
@@ -43,37 +74,21 @@ app.post('/', function(req, res, next) {
 app.get('/data', function(req, res, next) {
 	console.log('hit the data endpoint!');
 
-	var html = '<script src="bower_components/jquery/dist/jquery.min.js"></script>';
-			html += '<script>';
-			html += '$( document ).ready(function() {';
-			html +=   '$("body").on("click", ".delete", function(){ ' + dbHelpers.deleteHandler() + ' });';
-			html +=   '$("body").on("mouseover", ".db-entry", function(){ console.log("mouseover!"); });';
-			html += '});';
-			html += '</script>';
-			html += '<link rel="stylesheet" type="text/css" href="./css/styles.css">';
-
+	var html = '';
 	helprequests.find(function(err, objects) {
-		objects.forEach(function(object) {
-			html += '<p class="db-entry">' + JSON.stringify(object) + '<span class="delete">X</span></p>'
-		});
-		res.send(html);
+		res.send(objects);
+		return;
 	});
 });
 
 app.post('/data/delete', function(req, res, next) {
-	console.log('/data/delete POST!');
 	console.log('req.body: ' + JSON.stringify(req.body));
-
 	var id = req.body.id;
 	helprequests.findById(id).remove(function(err, removed) {
+		socketRef.emit('entry-deleted', removed);
 		console.log('successfully removed: ' + removed);
-		res.send();
+		res.send(req.body);
 	});
-
-	// helprequests.findById(id, function (err, found) {
-	// 	console.log(found);
-	// 	res.send();
-	// });
 });
 
 // static files
@@ -82,5 +97,11 @@ app.use(express.static('public'));
 // handle 404
 app.use(serverHelpers.handle404);
 
-app.listen(8000);
-console.log('listening on port http://localhost:8000');
+server.listen(PORT);
+console.log('listening on port http://localhost:' + PORT);
+
+
+// app.listen(PORT, function() {
+// 	console.log('listening on port http://localhost:' + PORT);
+// });
+/* -- END http server -- */
