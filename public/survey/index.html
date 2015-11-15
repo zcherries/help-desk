@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mongo dbms</title>
+  </head>
+  <body>
+
+  	<div id="container">
+			<code>begin react</code>
+	    <div id="react-mountpoint">
+	    </div>
+			<code>end react</code>
+		</div>
+
+    <link rel="stylesheet" href="./styles.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+    <script>console.log('babel loaded');</script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   	<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+
+
+    <script type="text/babel">
+
+    var timeclosed = "5:00PM, Saturday"
+	    var data = {
+	    	author: "William Carroll",
+	    	content: "I need help with Mongo and React",
+	    	tags: ["Mongo", "React", "JavaScript"],
+	    	timesubmitted: new Date(),
+	    	timeclosed: timeclosed
+	    };
+
+    	var Rating = React.createClass({
+    		handleClick: function(e) {
+    			switch (e.target.id) {
+    				case 'thumbsUp':
+    					this.setState({
+    						thumbsDown: false,
+    						thumbsMiddle: false
+    					});
+    					break;
+  					case 'thumbsDown':
+    					this.setState({
+    						thumbsUp: false,
+    						thumbsMiddle: false
+    					});
+    					break;
+  					case 'thumbsMiddle':
+    					this.setState({
+    						thumbsDown: false,
+    						thumbsUp: false
+    					});
+    					break;
+  					default:
+  						alert('not working');
+  						break;
+    			}
+    			console.log('changing state to: ' + e.target.id);
+    			var state = {};
+    			state[e.target.id] = true;
+  				this.setState(state);
+    		},
+
+	    	getInitialState: function() {
+	    		return {
+	    			thumbsUp: false,
+	    			thumbsMiddle: false,
+	    			thumbsDown: false
+	    		};
+	    	},
+    		render: function() {
+    			var selected;
+    			for (var key in this.state) {
+    				if (this.state[key]) selected = key;
+    			}
+    			return (
+    				<div className="rating">
+    					<p className="tag">{ this.props.tag }</p>
+    					<div className="thumbs-container">
+	    					<span id="thumbsDown" onClick={ this.handleClick } className="thumbs thumbs-down glyphicon glyphicon-thumbs-down"></span>
+	    					<span id="thumbsMiddle" onClick={ this.handleClick } className="thumbs thumbs-middle glyphicon glyphicon-hand-right"></span>
+	    					<span id="thumbsUp" onClick={ this.handleClick } className="thumbs thumbs-up glyphicon glyphicon-thumbs-up"></span>
+    					</div>
+    					<code>{ selected }</code>
+    				</div>
+  				);
+    		}
+    	});
+
+	    var RatingContainer = React.createClass({
+	    	render: function() {
+	    		var ratings = this.props.tags.map(function(tag, idx) {
+	    			return (
+	    				<Rating tag={ tag } key={ idx } />
+    				);
+	    		});
+	    		return (
+	    			<div className="box ratings-container">
+    					{ ratings }
+	    			</div>
+	  			);
+	    	}
+	    });
+
+    	var SurveyForm = React.createClass({
+    		render: function() {
+    			var formData = this.props.formData;
+    			return (
+    				<div className="survey-form">
+    					<h1>Hi, { formData.author }. How unstuck are you?</h1>
+    					<p>Our system notified us that your Help Desk Request ended: { formData.timeclosed }</p>
+    					<RatingContainer tags={ formData.tags } />
+  						<h3>Any shout outs?</h3>
+    					<form method="post">
+    						<textarea className="form-control" rows="3" id="shoutout" placeholder="Additional feedback is appreciated..."></textarea>
+    					</form>
+    				</div>
+    			);
+    		}
+    	});
+
+	    ReactDOM.render(
+	    	<SurveyForm formData={ data } />,
+	    	document.getElementById('react-mountpoint')
+	    );
+
+      
+    </script>
+  </body>
+</html>
