@@ -34,12 +34,3 @@ helpReqSchema.methods.speak = function() {
 };
 
 var HelpRequest = module.exports.HelpRequest = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
-
-// db.once('close', function(callback) {
-// 	// close
-// });
-
-// Kitten.find({ name: /^Fluff/ }, function(err, kittens) {
-// 	if (err) return console.error(err);
-// 	console.log(kittens);
-// });

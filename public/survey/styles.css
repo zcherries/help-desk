@@ -1,0 +1,58 @@
+.box {
+	box-sizing: border-box;
+}
+
+.container {
+	/*width: 100px;*/
+}
+
+.survey-form {
+	width: 500px;
+	margin: 0 auto;
+}
+
+.rating {
+	padding: 5px;
+	background-color: #FFF;
+}
+.ratings-container {
+	display: block;
+	width: 350px;
+	margin: 0 auto;
+	border: 1px solid #CCCCCC;
+}
+
+.rating:nth-child(odd) {
+	background-color: #E6E6E6;
+}
+
+.tag {
+	display: inline-block;
+	margin: 0 10px;
+	width: 100px;
+}
+
+.thumbs-container {
+	display: inline-block;
+	padding: 3px 5px;
+	margin: 0 10px;
+	background-color: #CCCCCC;
+	border-radius: 5px;
+}
+
+.thumbs {
+	cursor: pointer;
+	padding: 5px 5px;
+	border-radius: 3px;
+}
+
+.thumbs:hover {
+	background-color: #FFF;
+}
+
+.thumbs-down {
+	color: red;
+}
+.thumbs-up {
+	/*color: white;*/
+}

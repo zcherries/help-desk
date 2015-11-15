@@ -1,0 +1,17 @@
+form input {
+	display: block;
+	width: 100%;
+}
+
+.container {
+
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.app {
+	width: 700px;
+	margin: 0 auto;
+}
