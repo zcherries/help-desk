@@ -53,12 +53,12 @@ var NavOrg = React.createClass({
 var ShowList = React.createClass({
   render: function(){
     var listItems = this.props.names.map(function(item, idx){
-      return <li key={idx}>{item} </li>;
+      return <li key={idx}><a href="#">{item}</a> </li>;
   });
   return (
     <div>
       <h4> Links </h4>
-      <ul> <a href=""> {listItems} </a> </ul>
+      <ul> {listItems} </ul>
     </div>)
   }
 });
@@ -96,17 +96,19 @@ var AddLink = React.createClass({
 var NavContainer = React.createClass({
   render: function() {
     return (
-      <div className="navbar navbar-left">
-        <NavOrg />
-      </div>
-      <div className="navbar navbar-right">
-        <NavUser />
+      <div>
+        <div className="navbar navbar-left">
+          <NavOrg />
+        </div>
+        <div className="navbar navbar-right">
+          <NavUser />
+        </div>
       </div>
     )
   }
 });
 
-React.render(<NavContainer />, document.getElementById('navbar'));
+ReactDOM.render(<NavContainer />, document.getElementById('navbar'));
 
 
 
