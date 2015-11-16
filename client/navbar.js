@@ -1,31 +1,5 @@
 
-var HelloUser = React.createClass({
-  getInitialState: function () {
-    return {
-       username: 'mks-user'
-    }
-  },
-
-  render: function(){
-    return ( <div> 
-      Hello {this.state.username} <br />
-      Change Name: <input type="text" value={this.state.username} onChange= {this.handleChange} /><br />
-      note 1: need to define component before you can render it<br/>
-      note 2: render return can only contain 1 div element <br />
-      
-    </div>)
-  },
-  
-  handleChange: function(e){
-    this.setState({
-      username: e.target.value
-    });
-  }, 
-});
-        
-React.render(<HelloUser />, document.getElementById('app'));
-
-
+//Component for User profile
 var NavUser = React.createClass({
   getInitialState: function() {
     return {
@@ -53,12 +27,14 @@ var NavUser = React.createClass({
   }
 });
 
+//Component for MKS Org links
 var NavOrg = React.createClass({
   getInitialState: function() {
     return {
       orgName: 'My Org',
       resource1: 'My First Resource Link',
-      resource2: 'My Second Resource Link'
+      resource2: 'My Second Resource Link',
+      resource3: 'HelpDesk'
     }
   },
   render: function() {
@@ -72,10 +48,12 @@ var NavOrg = React.createClass({
   }
 });
 
+//sub-component for NavOrg.
+//should refactor for use in any navbar component
 var ShowList = React.createClass({
   render: function(){
-    var listItems = this.props.names.map(function(item){
-      return <li>{item} </li>;
+    var listItems = this.props.names.map(function(item, idx){
+      return <li key={idx}>{item} </li>;
   });
   return (
     <div>
@@ -85,6 +63,7 @@ var ShowList = React.createClass({
   }
 });
 
+//for dev purposes. not needed depending on UI?
 var AddLink = React.createClass({
   getInitialState: function(){
     return {
@@ -113,12 +92,14 @@ var AddLink = React.createClass({
   }
 });
     
-
+//component to render multiple components inside navbar
 var NavContainer = React.createClass({
   render: function() {
     return (
-      <div>
+      <div className="navbar navbar-left">
         <NavOrg />
+      </div>
+      <div className="navbar navbar-right">
         <NavUser />
       </div>
     )
