@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8">
     <title>Project X HRequests(Work in Progress)</title>
-    <!-- <link rel="stylesheet" href="./styles.css" /> -->
+    <link rel="stylesheet" href="../styles.css" /> 
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
@@ -13,28 +16,31 @@
 <body>
 <div id="content"></div>
 <script type="text/babel">
+
   var HelpRequestTab = React.createClass({
+    //need to find a way to grab tags from SubmitTags component as well as the value from the request-text form and place them in an object to send out
+    sendRequest: function(e) {
+      e.preventDefault();
+      $.ajax({
+        type: 'POST',
+        url:,
+        data:,
+        success:,
+        dataType:
+      })
+    },
     render: function() {
       return (
       <div className="help">
-      <SubmitTags />
-
-      <form className="request-form">
-        <input type="text" placeholder="Input your question here"/>
-        <input type="submit"  value="Submit Help Request"/>
-      </form>
+        <input type="text" className='request-text' placeholder="Input your question here"/>
+        <SubmitTags />
+        <br><input type="submit" id='request-submit' onSubmit={this.sendRequest} value="Submit Help Request"/></br>
       </div>
       );
-    } 
+    }
   });
 
   var SubmitTags = React.createClass({
-    // getDefaultProps: function () {
-    //   return {
-    //     submittedTags: []
-    //   };
-    // },
-
     getInitialState: function() {
       return {
         inputData: []
@@ -46,7 +52,6 @@
       console.log('pushing');
 
       this.state.inputData.push({key:this.refs.tag.value.trim(), text: this.refs.tag.value.trim()})
-
       this.setState({
         inputData: this.state.inputData
       });
@@ -58,9 +63,9 @@
     render: function () {
       return (
       <div className='submit-tags'>
-      <form className="submit-tag" autoComplete="on" onSubmit={this.handleSubmit} >
-        <input size="50%" height="200" type="text" placeholder="Enter tags" ref="tag"/>
-        <input type="submit" value="Add Tags"/>
+      <form className="submit-tag" onSubmit={this.handleSubmit} >
+        <input type="text" id='input' autocomplete="on" placeholder="Enter tags" ref="tag"/>
+        <input type="submit" value="Add Tags" />
       </form> 
       <RenderTags data={this.state.inputData} />
       </div>
@@ -69,26 +74,27 @@
   });
 
   var RenderTags = React.createClass({
+    closeTag: function (e) {
+      console.log(e)
+      $(e.target).closest('div').remove();
+      //remove from the database as well
+    },
     render: function () {
-      var tagNodes = this.props.data.map(function(tag){
+      var tagNodes = this.props.data.map(function(tag, idx) {
         return (
-          <div key={tag.id}>{tag.text}</div>
+          <div className='chip' onClick={this.closeTag} key={idx}>{tag.text}
+            <i className='material-icons'>close</i>
+          </div>
           );
-      })
+      }.bind(this))
       return (
-      <div className="taglist">{tagNodes}</div>
-      );
+        <div className="taglist">{tagNodes}</div>
+        );
     }
   });
 
-  // var SendRequest = React.createClass({
-  //   render: function () {
-  //     return ( <div></div> );
-  //   }
-  // });
-
   ReactDOM.render(
-    <HelpRequestTab />, document.getElementById('content')
+    <HelpRequestTab className='help-request' />, document.getElementById('content')
   );
 </script>
 </body>
