@@ -5,10 +5,12 @@ var NavUser = React.createClass({
     // return {
     //   username: 'default-user',
     //   slack: '#',
-    //   github: '#',
+    //   github: '#', 
     //   urls: ['slackIt', 'gitHubIt', 'reactIt', 'nodeIt']
     // }
-    return {};
+    return {
+      listVisible: false
+    };
   },
   addLink: function(url){
     this.state.urls.push(url);
@@ -16,6 +18,21 @@ var NavUser = React.createClass({
       urls: this.state.urls
     });
   },
+
+  select: function(item) {
+    this.props.selected = item;
+  },
+
+  show: function() {
+    this.setState({ listVisible: true });
+    document.addEventListener("click", this.hide);
+  },
+
+  hide: function() {
+    this.setState({ listVisible: false });
+    document.removeEventListener("click", this.hide);
+  },
+
   render: function() {
     // return (
     //   <div>
@@ -28,17 +45,28 @@ var NavUser = React.createClass({
     //   </div>
     //   )
     var placeholder = this.props.data;
-    console.log(placeholder);
+    // console.log(placeholder);
     var placeholderUrls = this.props.data[0].urls;
     // console.log(placeholder2);
     var userListItems = placeholderUrls.map(function(item,idx) {
       return <li key={idx}><a href="{item}">{item}</a> </li>;
+      // return <li key={idx}><a href="{item}">{item}</a> </li>;
     });
     return (
+      // <NavBar>
+      //   <Nav>
+      //     <NavDropdown eventKey={4} title="Dropdown" id="nav-dropdown">
+      //       <MenuItem eventKey="4.1">Action</MenuItem>
+      //       <MenuItem eventKey="4.2">Another action</MenuItem>
+      //       <MenuItem eventKey="4.3">Something else here</MenuItem>
+      //       <MenuItem divider />
+      //       <MenuItem eventKey="4.4">Separated link</MenuItem>
+      //     </NavDropdown>
+      //   </Nav>
+      // </NavBar>
       <div>
-        <h3>User Component</h3>
-        Welcome, {placeholder[0].username} <br />
-        <ul>{userListItems}</ul>
+        <h5 onClick={this.show}>Welcome, {placeholder[0].username} </h5>
+        {this.state.listVisible ? <ul>{userListItems}</ul> : "" }
       </div>
     )
   }
@@ -104,7 +132,6 @@ var NavOrg = React.createClass({
     });
     return (
       <div>
-        <h3>Org Component</h3>
         <div>{orgListItems}</div>
       </div>
     ) 
@@ -148,11 +175,11 @@ var AddLink = React.createClass({
 var NavContainer = React.createClass({
   render: function() {
     return (
-      <div>
-        <div className="navbar navbar-left">
+      <div className="navbar">
+        <div className="navOrg navbar-left">
           <NavOrg data={orgData} />
         </div>
-        <div className="navbar navbar-right">
+        <div className="navUser navbar-nav navbar-collapse collapse navbar-right">
           <NavUser data={userData} />
         </div>
       </div>
