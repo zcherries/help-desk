@@ -4,3 +4,5 @@ bower_components/
 
 build/
 dist/
+.DS_store
+public/data/.DS_Store
