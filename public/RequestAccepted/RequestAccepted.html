@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Project X HRequests(Work in Progress</title>
+    <!-- Not present in the tutorial. Just for basic styling. -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <!--<script type="text/babel" src="scripts/example.js"></script>-->
+    <script type="text/babel">
+      // To get started with this tutorial running your own code, simply remove
+      // the script tag loading scripts/example.js and start writing code here.
+      
+      var AcceptanceStage = React.createClass({
+
+        getInitialState : function(){
+
+          return {
+            student: 'William Carrol',
+            tags: ['database','mysql','datastructures'],
+            fellow: 'joe Nagiyiziki',
+            question: 'dont understand why my queue is not working',
+            fellowimage: "./16.jpg"
+          }
+        },
+
+        loadRequestsFromServer: function(){
+
+         $.ajax({
+            url: url,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function(data) {
+             this.setState( data.profile);
+            },
+            error: function (data) {
+              console.error('Failed to get help request');
+            }
+          });
+
+        },
+
+        render: function(){
+          return(
+
+            <div>
+              <div>Your help request regarding</div>
+              <ReviewTags taginfo={this.state.tags}/>
+              <div>
+                <div>has been accepted by<br>{ this.state.fellow }</br></div>
+                <img src= { this.state.fellowimage } height="100" width="100"></img>
+              </div>
+            </div>
+            );
+            
+        }
+
+      });
+
+      var ReviewTags = React.createClass({
+
+    
+
+        getInitialState: function(){
+          return { tags : this.props.taginfo }
+        },
+        
+        render: function(){
+          var tagMap = this.state.tags.map(function(tag){
+            return (
+              <div>{tag}</div>
+              )
+          });
+
+          return(
+            <div>
+              <div>{tagMap}</div>
+            </div>
+          );
+        }
+
+      });
+
+
+      
+
+
+
+      ReactDOM.render(<AcceptanceStage />, document.body);
+    </script>
+  </body>
+</html>
