@@ -2,12 +2,13 @@
 //Component for User profile
 var NavUser = React.createClass({
   getInitialState: function() {
-    return {
-      username: 'default-user',
-      slack: '#',
-      github: '#',
-      urls: ['slackIt', 'gitHubIt', 'reactIt', 'nodeIt']
-    }
+    // return {
+    //   username: 'default-user',
+    //   slack: '#',
+    //   github: '#',
+    //   urls: ['slackIt', 'gitHubIt', 'reactIt', 'nodeIt']
+    // }
+    return {};
   },
   addLink: function(url){
     this.state.urls.push(url);
@@ -16,39 +17,33 @@ var NavUser = React.createClass({
     });
   },
   render: function() {
-    return (<div>
-      <h3>User Component</h3>
-      Welcome, {this.state.username} <br/>
-      <span>Slack: {this.state.slack} </span>
-      <span> | Github: <a href=""> {this.state.github}</a> </span>
-      <ShowList names={this.state.urls} />
-      <AddLink addNew={this.addLink} />     
-    </div>)
+    // return (
+    //   <div>
+    //     <h3>User Component</h3>
+    //     Welcome, {this.state.username} <br/>
+    //     <span>Slack: {this.state.slack} </span>
+    //     <span> | Github: <a href="#"> {this.state.github}</a> </span>
+    //     <ShowList names={this.state.urls} />
+    //     <AddLink addNew={this.addLink} />     
+    //   </div>
+    //   )
+    var placeholder = this.props.data;
+    // console.log(placeholder[0].urls);
+    var placeholder2 = this.props.data[0].urls;
+    // console.log(placeholder2);
+    var userListItems = placeholder2.map(function(item,idx) {
+      return <li key={idx}><a href="{item}">{item}</a> </li>;
+    });
+    return (
+      <div>
+        <h3>User Component</h3>
+        <ul>{userListItems}</ul>
+      </div>
+    )
   }
 });
 
-//Component for MKS Org links
-var NavOrg = React.createClass({
-  getInitialState: function() {
-    return {
-      orgName: 'My Org',
-      resource1: 'My First Resource Link',
-      resource2: 'My Second Resource Link',
-      resource3: 'HelpDesk'
-    }
-  },
-  render: function() {
-    return (<div>
-      <h3>Org Component</h3>
-      <span>{this.state.orgName} </span>
-      <span> || </span>
-      <span>{this.state.resource1} </span>
-      <span>{this.state.resource2}</span>
-    </div> )
-  }
-});
-
-//sub-component for NavOrg.
+//sub-component for NavUser.
 //should refactor for use in any navbar component
 var ShowList = React.createClass({
   render: function(){
@@ -59,9 +54,63 @@ var ShowList = React.createClass({
     <div>
       <h4> Links </h4>
       <ul> {listItems} </ul>
-    </div>)
+    </div>
+    )
   }
 });
+
+var userData = [
+  {id: 1, 
+    username: 'default-user', 
+    slack: '#', 
+    github: '#', 
+    urls: ['slackIt', 'gitHubIt', 'reactIt', 'nodeIt']
+  },
+];
+
+var orgData = [
+  {id: 1, title: 'My Cohort', link: '#'},
+  {id: 2, title: 'Syllabus', link: '#'},
+  {id: 3, title: 'Repo List', link: '#'},
+  {id: 4, title: 'Wiki', link: '#'},
+  {id: 5, title: 'Help Desk', link: '#'},
+];
+
+//Component for MKS Org links
+var NavOrg = React.createClass({
+  getInitialState: function() {
+    // return {
+    //   orgName: 'My Cohort',
+    //   resource1: 'Syllabus',
+    //   resource2: 'Repo List',
+    //   resource3: 'Wiki',
+    //   resource4: 'HelpDesk'
+    // }
+    return {};
+  },
+  render: function() {
+    // return (<div>
+    //   <h3>Org Component</h3>
+    //   <span>{this.state.orgName} </span>
+    //   <span> | {this.state.resource1} </span>
+    //   <span> | {this.state.resource2} </span>
+    //   <span> | {this.state.resource3} </span>
+    //   <span> | {this.state.resource4} </span>
+    //   OrgList data={this.props.data}
+    // </div> )
+    var orgListItems = this.props.data.map(function(item) {
+      return <span key={item.id}><a href="{item.link}">{item.title}</a>  |  </span>;
+    });
+    return (
+      <div>
+        <h3>Org Component</h3>
+        <div>{orgListItems}</div>
+      </div>
+    ) 
+  }
+});
+
+
 
 //for dev purposes. not needed depending on UI?
 var AddLink = React.createClass({
@@ -85,10 +134,12 @@ var AddLink = React.createClass({
     });
   },
   render: function(){
-    return (<div>
-      <input type="text" value={this.state.newLink} onChange={this.updateNewLink} />
-      <button onClick={this.handleAddNew}> Add Link </button>
-    </div>)
+    return (
+      <div>
+        <input type="text" value={this.state.newLink} onChange={this.updateNewLink} />
+        <button onClick={this.handleAddNew}> Add Link </button>
+      </div>
+    )
   }
 });
     
@@ -98,10 +149,10 @@ var NavContainer = React.createClass({
     return (
       <div>
         <div className="navbar navbar-left">
-          <NavOrg />
+          <NavOrg data={orgData} />
         </div>
         <div className="navbar navbar-right">
-          <NavUser />
+          <NavUser data={userData} />
         </div>
       </div>
     )
