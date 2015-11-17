@@ -60,6 +60,7 @@ app.post('/', function(req, res, next) {
 		res.send('Please enter valid data!');
 		return;
 	}
+	console.log('req.body: ' + JSON.stringify(req.body));
 	var newHelpRequest = new HelpRequest(req.body);
 	newHelpRequest.save(function(err, newHelpRequest) {
 		if(err) return console.error(err);

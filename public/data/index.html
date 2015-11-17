@@ -40,7 +40,7 @@
 	    	render: function() {
 	    		var objectProps = [];
 	    		for (var key in this.props.obj) {
-	    			objectProps.push(key + ': ' + this.props.obj[key]);
+	    			objectProps.push(<p>{key + ': ' + this.props.obj[key]}</p>);
 	    		}
 	    		return (
 	    			<div className="db-entry" onClick={ this.handleClick }>
