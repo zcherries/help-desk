@@ -2,15 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Mongo dbms</title>
+    <title>Mongo DBMS</title>
   </head>
   <body>
-		<code>begin react</code>
     <div id="react-container">
     </div>
-		<code>end react</code>
 
-    <link rel="stylesheet" href="./styles.css" />
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />`
+    <link rel="stylesheet" href="./css/styles.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
@@ -45,7 +44,7 @@
 	    		}
 	    		return (
 	    			<div className="db-entry" onClick={ this.handleClick }>
-	    				<code>{ objectProps }</code>
+	    				<span>{ objectProps }</span>
 	    			</div>
 	  			);
 	    	}

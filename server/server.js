@@ -18,13 +18,12 @@ app.use(bodyParser());
 // internal middleware
 app.use(serverHelpers.printReqInfo);
 
-
-
 /* -- BEGIN socket IO -- */
 
 var handleEntryAdded;
 var handleEntryDeleted;
 var socketRef;
+
 
 io.on('connection', function (socket) {
 	console.log('new connection!');
@@ -92,7 +91,7 @@ app.post('/data/delete', function(req, res, next) {
 });
 
 // static files
-app.use(express.static('../public'));
+app.use(express.static('./public'));
 
 // handle 404
 app.use(serverHelpers.handle404);
