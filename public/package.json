@@ -1,0 +1,25 @@
+{
+  "name": "helpdesk-front-end",
+  "version": "1.0.0",
+  "description": "front-end dependencies for MKS Help Desk revamp",
+  "main": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EarthWindandJS/project-november.git"
+  },
+  "author": "William Carroll",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EarthWindandJS/project-november/issues"
+  },
+  "homepage": "https://github.com/EarthWindandJS/project-november#readme",
+  "devDependencies": {
+    "babel-loader": "^6.1.0"
+  },
+  "dependencies": {
+    "webpack": "^1.12.6"
+  }
+}

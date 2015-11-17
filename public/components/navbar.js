@@ -1,4 +1,3 @@
-
 //Component for User profile
 var NavUser = React.createClass({
   getInitialState: function() {
@@ -16,14 +15,16 @@ var NavUser = React.createClass({
     });
   },
   render: function() {
-    return (<div>
-      <h3>User Component</h3>
-      Welcome, {this.state.username} <br/>
-      <span>Slack: {this.state.slack} </span>
-      <span> | Github: <a href=""> {this.state.github}</a> </span>
-      <ShowList names={this.state.urls} />
-      <AddLink addNew={this.addLink} />     
-    </div>)
+    return (
+      <div>
+        <h3>User Component</h3>
+        Welcome, {this.state.username}<br/>
+        <span>Slack: {this.state.slack}</span>
+        <span> | Github: <a href="">{this.state.github}</a> </span>
+        <ShowList names={this.state.urls} />
+        <AddLink addNew={this.addLink} />     
+      </div>
+    );
   }
 });
 
@@ -38,13 +39,15 @@ var NavOrg = React.createClass({
     }
   },
   render: function() {
-    return (<div>
-      <h3>Org Component</h3>
-      <span>{this.state.orgName} </span>
-      <span> || </span>
-      <span>{this.state.resource1} </span>
-      <span>{this.state.resource2}</span>
-    </div> )
+    return (
+      <div>
+        <h3>Org Component</h3>
+        <span>{this.state.orgName}</span>
+        <span> || </span>
+        <span>{this.state.resource1}</span>
+        <span>{this.state.resource2}</span>
+      </div>
+    );
   }
 });
 
@@ -53,13 +56,16 @@ var NavOrg = React.createClass({
 var ShowList = React.createClass({
   render: function(){
     var listItems = this.props.names.map(function(item, idx){
-      return <li key={idx}>{item} </li>;
+      return <li key={idx}><a href="#">{item}</a></li>;
   });
-  return (
-    <div>
-      <h4> Links </h4>
-      <ul> <a href=""> {listItems} </a> </ul>
-    </div>)
+    return (
+      <div>
+        <h4>Links</h4>
+        <ul>
+          {listItems}
+        </ul>
+      </div>
+    );
   }
 });
 
@@ -85,10 +91,12 @@ var AddLink = React.createClass({
     });
   },
   render: function(){
-    return (<div>
-      <input type="text" value={this.state.newLink} onChange={this.updateNewLink} />
-      <button onClick={this.handleAddNew}> Add Link </button>
-    </div>)
+    return (
+      <div>
+        <input type="text" value={this.state.newLink} onChange={this.updateNewLink} />
+        <button onClick={this.handleAddNew}> Add Link </button>
+      </div>
+    );
   }
 });
     
@@ -96,17 +104,19 @@ var AddLink = React.createClass({
 var NavContainer = React.createClass({
   render: function() {
     return (
-      <div className="navbar navbar-left">
-        <NavOrg />
-      </div>
-      <div className="navbar navbar-right">
-        <NavUser />
+      <div>
+        <div className="navbar navbar-left">
+          <NavOrg />
+        </div>
+        <div className="navbar navbar-right">
+          <NavUser />
+        </div>
       </div>
     )
   }
 });
 
-React.render(<NavContainer />, document.getElementById('navbar'));
+ReactDOM.render(<NavContainer />, document.getElementById('navbar'));
 
 
 

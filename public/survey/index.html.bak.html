@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Feedback Survey</title>
+  </head>
+  <body>
+
+  	<div id="container">
+	    <div id="react-mountpoint">
+	    </div>
+		</div>
+
+    <link rel="stylesheet" href="./styles.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+    <script>console.log('babel loaded');</script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   	<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+
+    <script type="text/babel">
+
+      (function() {
+        // global vars
+        var _formData = {
+          author: '',
+          tags: {},
+          shoutout: '',
+          timesubmitted: '5:30PM, Saturday',
+        };
+
+        var data = {
+          author: "William Carroll",
+          content: "I need help with Mongo and React",
+          tags: ["Mongo", "React", "JavaScript"],
+          timesubmitted: "4:52PM, Saturday",
+          timeclosed: "5:00PM, Saturday"
+        };
+
+        // Component Props:
+        // tag: (e.g. "Mongo" or "JavaScript" or "mySQL")
+        // key: mandatory for React
+        var RatingRow = React.createClass({
+          handleClick: function(e) {
+            this.setState({
+              thumbsUp: false,
+              thumbsMiddle: false,
+              thumbsDown: false
+            });
+            var state = {};
+            state[e.target.id] = true;
+            this.setState(state);
+            _formData.tags[this.props.tag] = e.target.id;
+          },
+
+          getInitialState: function() {
+            return {
+              thumbsUp: false,
+              thumbsMiddle: false,
+              thumbsDown: false
+            };
+          },
+          render: function() {
+            var selected;
+            for (var key in this.state) {
+              if (this.state[key]) selected = key;
+            }
+            return (
+              <div className="rating">
+                <p className="tag">{ this.props.tag }</p>
+                <div className="thumbs-container">
+                  <span id="thumbsDown" onClick={ this.handleClick } className="thumbs thumbs-down glyphicon glyphicon-thumbs-down"></span>
+                  <span id="thumbsMiddle" onClick={ this.handleClick } className="thumbs thumbs-middle glyphicon glyphicon-thumbs-up"></span>
+                  <span id="thumbsUp" onClick={ this.handleClick } className="thumbs thumbs-up glyphicon glyphicon-thumbs-up"></span>
+                </div>
+                <code>{ selected }</code>
+              </div>
+            );
+          }
+        });
+
+        // Component Props:
+        // tags: an array of technology names (e.g. ["Mongo", "JavaScript", "mySql"])
+        // callbackParent: function to allow events to be broadcast to parents
+        var RatingContainer = React.createClass({
+          render: function() {
+            var ratings = this.props.tags.map(function(tag, idx) {
+              return (
+                <RatingRow tag={ tag } key={ idx } />
+              );
+            });
+            return (
+              <div className="box ratings-container">
+                { ratings }
+              </div>
+            );
+          }
+        });
+
+        // Component Props:
+        // formData: JSON object to simulate data from db
+        var SurveyForm = React.createClass({
+          handleSubmit: function(e) {
+            e.preventDefault();
+            var shoutout = this.refs.shoutout;
+            _formData.shoutout = shoutout.value;
+            console.log('_formData: ' + JSON.stringify(_formData));
+          },
+          onRatingChange: function(state) {
+            this.setState(state);
+          },
+          componentWillMount: function() {
+            _formData.author = this.props.formData.author;
+          },
+          getInitialState: function() {
+            return {
+              thumbsUp: false,
+              thumbsMiddle: false,
+              thumbsDown: false
+            };
+          },
+          render: function() {
+            var formData = this.props.formData;
+      			return (
+      				<div className="survey-form">
+      					<h1>Hi, { formData.author }. How unstuck are you?</h1>
+      					<p>Our system notified us that your Help Desk Request ended: { formData.timeclosed }</p>
+      					<RatingContainer tags={ formData.tags } callbackParent={ this.onRatingChange } />
+    						<h3>Any shout outs?</h3>
+      					<form method="post" onSubmit={ this.handleSubmit }>
+      						<textarea ref="shoutout" className="form-control" rows="3" id="shoutout" placeholder="Additional feedback is appreciated..."></textarea>
+                  <input className="btn btn-default" type="submit" value="Submit" />
+      					</form>
+      				</div>
+      			);
+      		}
+      	});
+
+  	    ReactDOM.render(
+  	    	<SurveyForm formData={ data } />,
+  	    	document.getElementById('react-mountpoint')
+  	    );
+      })();
+      
+    </script>
+  </body>
+</html>
