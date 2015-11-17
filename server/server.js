@@ -1,6 +1,7 @@
 var serverHelpers = require('./server-helpers.js');
 var express = require('express');
 var http = require('http');
+var path = require('path');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var dbHelpers = require('./db/db-helpers.js');
@@ -67,7 +68,6 @@ var acceptHelpRequest = function(hrObj) {
 
 	helprequests.update(conditions, update, options, callback);
 
-	// hopefully numAffected === 1
 	function callback (err, numAffected) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
@@ -75,20 +75,32 @@ var acceptHelpRequest = function(hrObj) {
 	}
 };
 var closeHelpRequest = function(hrObj) {
+	var timestamp = new Date();
 	var conditions = { _id: hrObj._id },
-			update = { $set: { closed: true } },
+			update = { $set: { closed: true, timeclosed: timestamp } },
 			options = { multi: false };
 
 	helprequests.update(conditions, update, options, callback);
 
-	// hopefully numAffected === 1
 	function callback (err, numAffected) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
 		socketRef.emit('fellow-closed');
 	}
 };
+var addFeedbackSurvey = function(hrObj) {
+	var conditions = { _id: hrObj._id },
+			update = { $set: { feedback: hrObj.feedback } },
+			options = { multi: false };
 
+	helprequests.update(conditions, update, options, callback);
+
+	function callback (err, numAffected) {
+		if (err) console.error(err);
+		console.log('successfully updated help request');
+		socketRef.emit('fellow-closed');
+	}
+};
 
 /* -- BEGIN http server -- */
 app.post('/', function(req, res, next) {
@@ -105,6 +117,13 @@ app.post('/', function(req, res, next) {
 		newHelpRequest.speak();
 		res.send(req.body);
 	});
+});
+
+// feedback forms
+app.post('/feedback', function(req, res, next) {
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var id = req.body.id;
+	addFeedbackSurvey(req.body);
 });
 
 // viewing the db
@@ -125,6 +144,19 @@ app.post('/data/delete', function(req, res, next) {
 		console.log('successfully removed: ' + removed);
 		res.send(req.body);
 	});
+});
+
+app.get('/survey/*', function(req, res, next) {
+	console.log(req.path);
+	// grab unique db entry ID
+	var id = path.parse(req.path).base;
+	console.log('id: ' + id);
+	helprequests.findById(id)
+		.then(function(err, found) {
+			if (err) console.error(err);
+			console.log(found);
+			res.send(found);
+		});
 });
 
 // static files

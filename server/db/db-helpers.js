@@ -9,9 +9,11 @@ var helpReqSchema = module.exports.helpReqSchema = mongoose.Schema({
 	content: String,
 	tags: [String],
 	timesubmitted: String,
+	timeclosed: String,
 	accepted: Boolean,
 	closed: Boolean,
-	assignedFellow: String
+	assignedFellow: String,
+	feedback: String
 });
 
 helpReqSchema.methods.speak = function() {
