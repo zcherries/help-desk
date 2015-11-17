@@ -8,10 +8,9 @@
 
   var HelpRequestTab = React.createClass({
     sendRequest: function(e) {
+      e.preventDefault();
       _formData.content = this.refs.content.value.trim()
       _formData.timesubmitted = new Date();
-      //EDIT THIS WILL!!!!!!!!!!!!!!  v
-      e.preventDefault();
       $.post('/', _formData, function(data) {
         console.log('successfully posted! data: ' + JSON.stringify(data));
       });
@@ -19,7 +18,7 @@
     render: function() {
       return (
         <div className="help">
-          <input type="text" className="request-text" placeholder="Input your question here" ref='content'/>
+          <textarea ref="content" className="request-text form-control" rows="3" id="content" placeholder="Input your question here"></textarea>
           <SubmitTags /><br/>
           <button id='request-submit' onClick={this.sendRequest}>Submit Help Request</button>
         </div>
