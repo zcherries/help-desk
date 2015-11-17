@@ -30,7 +30,16 @@ io.on('connection', function (socket) {
 	socketRef = socket;
 	console.log('socketRef: ' + socketRef);
 
-  socket.emit('news', { hello: 'world' });
+  socket.on('accept-hr', function(hrObj) {
+  	console.log(hrObj.name + ' has just accepted a HR.');
+  	console.log(JSON.stringify(hrObj));
+  	acceptHelpRequest(hrObj);
+  });
+  socket.on('close-hr', function(hrObj) {
+  	console.log(hrObj.name + ' has just closed a HR.');
+  	console.log(JSON.stringify(hrObj));
+  	closeHelpRequest(hrObj);
+  });
 
   socket.on('my other event', function (data) {
     console.log(data);
@@ -38,12 +47,10 @@ io.on('connection', function (socket) {
 });
 /* -- END socket IO -- */
 
-
-
 /* -- BEGIN mongo setup --*/
+var helprequests;
 mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
-var helprequests;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function(callback) {
 	// connect to a collection
@@ -51,6 +58,36 @@ db.once('open', function(callback) {
 });
 /* -- END mongo setup -- */
 
+
+// helper functions
+var acceptHelpRequest = function(hrObj) {
+	var conditions = { _id: hrObj._id },
+			update = { $set: { accepted: true, assignedFellow: hrObj.name } },
+			options = { multi: false };
+
+	helprequests.update(conditions, update, options, callback);
+
+	// hopefully numAffected === 1
+	function callback (err, numAffected) {
+		if (err) console.error(err);
+		console.log('successfully updated help request');
+		socketRef.emit('fellow-accepted');
+	}
+};
+var closeHelpRequest = function(hrObj) {
+	var conditions = { _id: hrObj._id },
+			update = { $set: { closed: true } },
+			options = { multi: false };
+
+	helprequests.update(conditions, update, options, callback);
+
+	// hopefully numAffected === 1
+	function callback (err, numAffected) {
+		if (err) console.error(err);
+		console.log('successfully updated help request');
+		socketRef.emit('fellow-closed');
+	}
+};
 
 
 /* -- BEGIN http server -- */
@@ -72,8 +109,7 @@ app.post('/', function(req, res, next) {
 
 // viewing the db
 app.get('/data', function(req, res, next) {
-	console.log('hit the data endpoint!');
-
+	console.log('fetching from DB...');
 	var html = '';
 	helprequests.find(function(err, objects) {
 		res.send(objects);

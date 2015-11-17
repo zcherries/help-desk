@@ -3,8 +3,11 @@
     author: 'William Carroll',
     content: '',
     tags: [],
-    timesubmitted: ''
-  }
+    timesubmitted: '',
+    accepted: false,
+    closed: false,
+    assignedFellow: 'no fellow assigned'
+  };
 
   var HelpRequestTab = React.createClass({
     sendRequest: function(e) {

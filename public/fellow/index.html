@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title>HR Stream</title>
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-		<h1>Pending Help Requests</h1>
-    <div id="react-container">
+  	<h1 class="text-center">Help Request Status</h1>
+    <div id="help-requests">
     </div>
 
-  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />`
-    <link rel="stylesheet" href="./css/styles.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
@@ -19,8 +19,14 @@
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
    	<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 
     <script type="text/babel">
+
+    	// 
+    	var fellowInfo = {
+    		name: 'Joe Nayigiziki'
+    	};
 
    		var socket = io();
    		// socket listeners are found in componentWillMount
@@ -28,9 +34,22 @@
 
 	    var DatabaseEntry = React.createClass({
 	    	handleClick: function(e) {
+
 	    		var databaseEntry = this.props.obj;
-	    		socket.emit('accept-hr', databaseEntry);
-	    		this.props.parentClickHandler();
+	    		_.extend(databaseEntry, fellowInfo);
+	    		switch (this.props.status) {
+	    			case 'outstanding':
+	    				socket.emit('accept-hr', databaseEntry);
+	    				break;
+    				case 'in-progress':
+    					socket.emit('close-hr', databaseEntry);
+	    				break;
+    				case 'closed':
+    					alert('Why did you do that?!');
+	    				break;
+	    		}
+
+	    		// this.props.parentClickHandler();
 	    	},
 
 	    	render: function() {
@@ -48,8 +67,8 @@
 
 	    var DatabaseViewer = React.createClass({
 	    	parentHandleClick: function(data) {
-	    		console.log('Fellow accepted HR');
-	    		this.getMongo();
+	    		// console.log('Fellow accepted HR');
+	    		// this.getMongo();
 	    	},
 	    	getMongo: function() {
 	    		$.get(this.props.source, function(data) {
@@ -66,9 +85,15 @@
 		    		helpRequests: []
 		    	};
 	    	},
-	    	componentDidMount: function() {
+	    	componentWillMount: function() {
 					this.getMongo();
+	    	},
+	    	componentDidMount: function() {
 					var socket = io();
+					socket.on('fellow-closed', function(data) {
+						console.log('fellow-closed: ' + JSON.stringify(data));
+						this.getMongo();
+					});
 					socket.on('fellow-accepted', function(data) {
 						console.log('fellow-accepted: ' + JSON.stringify(data));
 						this.getMongo();
@@ -83,12 +108,38 @@
 				  }.bind(this));
 	    	},
 	    	render: function() {
-	    		var databaseEntries = this.state.helpRequests.map(function(entry, idx) {
-	    			return <DatabaseEntry obj={ entry } key={ idx } parentClickHandler={ this.parentHandleClick } />;
+	    		var outstandingHRs = [];
+	    		var inProgressHRs = [];
+	    		var closedHRs = [];
+	    		this.state.helpRequests.forEach(function(helpRequest, idx) {
+	    			if (helpRequest.accepted && !helpRequest.closed) {
+	    				console.log('adding entry: in-progress');
+	    				inProgressHRs.push(<DatabaseEntry obj={ helpRequest } key={ idx } status="in-progress" parentClickHandler={ this.parentHandleClick } />);
+	    			} else if (!helpRequest.accepted && !helpRequest.closed) {
+	    				console.log('adding entry: oustanding');
+	    				outstandingHRs.push(<DatabaseEntry obj={ helpRequest } key={ idx } status="outstanding" parentClickHandler={ this.parentHandleClick } />);
+	    			} else {
+	    				console.log('adding entry: closed');
+	    				closedHRs.push(<DatabaseEntry obj={ helpRequest } key={ idx } status="closed" parentClickHandler={ this.parentHandleClick } />);
+	    			}
 	    		}.bind(this));
+	    		// var databaseEntries = this.state.helpRequests.map(function(entry, idx) {
+	    		// 	return <DatabaseEntry obj={ entry } key={ idx } parentClickHandler={ this.parentHandleClick } />;
+	    		// }.bind(this));
 	    		return (
 	    			<div>
-	    				{ databaseEntries }
+	    				<div id="oustanding" className="col-md-4">
+	    					<h3 className="text-center">Outstanding</h3>
+	    					{ outstandingHRs }
+	    				</div>
+	    				<div id="in-progress" className="col-md-4">
+	    					<h3 className="text-center">In Progress</h3>
+	    					{ inProgressHRs }
+	    				</div>
+	    				<div id="closed" className="col-md-4">
+	    					<h3 className="text-center">Closed</h3>
+	    					{ closedHRs }
+	    				</div>
 	    			</div>
     			);
 	    	}
@@ -96,7 +147,7 @@
 
 	    ReactDOM.render(
 	    	<DatabaseViewer source='http://localhost:8000/data' />,
-	    	document.getElementById('react-container')
+	    	document.getElementById('help-requests')
 	    );
 
       
