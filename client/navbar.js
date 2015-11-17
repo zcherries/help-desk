@@ -28,15 +28,16 @@ var NavUser = React.createClass({
     //   </div>
     //   )
     var placeholder = this.props.data;
-    // console.log(placeholder[0].urls);
-    var placeholder2 = this.props.data[0].urls;
+    console.log(placeholder);
+    var placeholderUrls = this.props.data[0].urls;
     // console.log(placeholder2);
-    var userListItems = placeholder2.map(function(item,idx) {
+    var userListItems = placeholderUrls.map(function(item,idx) {
       return <li key={idx}><a href="{item}">{item}</a> </li>;
     });
     return (
       <div>
         <h3>User Component</h3>
+        Welcome, {placeholder[0].username} <br />
         <ul>{userListItems}</ul>
       </div>
     )
