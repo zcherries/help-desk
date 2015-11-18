@@ -1,4 +1,5 @@
 (function() {
+
   var _formData = {
     author: 'William Carroll',
     content: '',
@@ -10,6 +11,73 @@
     assignedFellow: 'no fellow assigned',
     feedback: 'empty'
   };
+
+  var Tag = React.createClass({
+    removeSelf: function(e) {
+      this.props.parentRemoveTag(this.refs.tagText.innerHTML);
+    },
+    render: function() {
+      return (
+        <div className="chip" tagName={ this.props.text } onClick={ this.removeSelf }>
+          <span ref="tagText">{ this.props.text }</span><i className='material-icons'>close</i>
+        </div>
+      );
+    }
+  });
+
+  var TagContainer = React.createClass({
+    render: function () {
+      var tagNodes = this.props.data.map(function(tag, idx) {
+        return (
+            <Tag text={ tag } parentRemoveTag={ this.props.parentRemoveTag } key={ idx } />
+          );
+      }.bind(this))
+      return (
+        <div className="taglist">
+          { tagNodes }
+        </div>
+      );
+    }
+  });
+
+  var TagSubmit = React.createClass({
+    getInitialState: function() {
+      return {
+        inputTags: [],
+      };
+    },
+    clearForms: function() {
+      this.refs.tag.value = '';
+    },
+    parentRemoveTag: function(tagText) {
+      var inputTags = this.state.inputTags.slice();
+      var tagIdx = inputTags.indexOf(tagText);
+      inputTags.splice(tagIdx, 1)
+      this.setState({
+        inputTags: inputTags
+      });
+    },
+    handleSubmit: function (e) {
+      e.preventDefault();
+      var tagText = this.refs.tag.value.trim();
+      _formData.tags.push(tagText);
+      this.setState({
+        inputTags: this.state.inputTags.concat(tagText)
+      });
+      this.clearForms();
+    },
+    render: function () {
+      return (
+      <div className='submit-tags'>
+        <form className="submit-tag" onSubmit={this.handleSubmit} >
+          <input type="text" id='input' autoComplete="off" placeholder="Enter tags" ref="tag"/>
+          <input type="submit" id='input-submit' value="Add Tags" />
+        </form> 
+        <TagContainer data={ this.state.inputTags } parentRemoveTag={ this.parentRemoveTag } />
+      </div>
+      );
+    }
+  });
 
   var HelpRequestTab = React.createClass({
     clearForm: function() {
@@ -29,70 +97,9 @@
         <div className="help">
         <div className='help-text'>Help</div>
           <textarea ref="content" className="request-text form-control" rows="3" id="content" placeholder="What do you need help on?"></textarea>
-          <SubmitTags /><br/>
+          <TagSubmit /><br/>
           <button id='request-submit' onClick={this.sendRequest}>Submit Help Request</button>
         </div>
-      );
-    }
-  });
-
-  var SubmitTags = React.createClass({
-    getInitialState: function() {
-      return {
-        inputData: [],
-      };
-    },
-    removeTag: function(tagname) {
-      var removeIdx = this.state.inputData.indexOf(tagname);
-      var cp = this.state.inputData.slice();
-      cp.splice(removeIdx, 1);
-      this.setState({
-        inputData: cp
-      });
-    },
-    handleSubmit: function (event) {
-      event.preventDefault();
-      console.log('pushing');
-
-      this.state.inputData.push({key:this.refs.tag.value.trim(), text: this.refs.tag.value.trim()});
-      _formData.tags.push(this.refs.tag.value.trim());
-      console.log('formData is: ' + _formData);
-      this.setState({
-        inputData: this.state.inputData
-      });
-
-      console.log(this.state.inputData)
-      this.refs.tag.value = '';
-    },
-    render: function () {
-      return (
-      <div className='submit-tags'>
-      <form className="submit-tag" onSubmit={this.handleSubmit} >
-      <input type="text" id='input' autoComplete="on" placeholder="Enter tags" ref="tag"/>
-        <input type="submit" id='input-submit' value="Add Tags" />
-      </form> 
-      <RenderTags data={this.state.inputData} />
-      </div>
-      );
-    }
-  });
-
-  var RenderTags = React.createClass({
-    closeTag: function (e) {
-      var tag = $(e.target).closest('div').find('span').text();
-      this.props.updateParentState(tag);
-      $(e.target).closest('div').remove();
-    },
-    render: function () {
-      var tagNodes = this.props.data.map(function(tag, idx) {
-        return (
-          <div className='chip' tagName={ tag.text } onClick={this.closeTag} key={idx}>
-            <span>{tag.text}</span><i className='material-icons'>close</i>
-          </div>
-          );
-      }.bind(this))
-      return (
-        <div className="taglist">{tagNodes}</div>
       );
     }
   });
