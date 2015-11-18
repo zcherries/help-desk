@@ -79,6 +79,7 @@ var closeHelpRequest = function(hrObj) {
 			options = { multi: false };
 
 	helprequests.update(conditions, update, options, callback);
+	sendFeedbackSurvey(hrObj);
 
 	function callback (err, numAffected) {
 		if (err) console.error(err);
@@ -176,20 +177,20 @@ app.post('/data/bugs/delete', function(req, res, next) {
 	});
 });
 
-app.get('/survey/*', function(req, res, next) {
-	console.log(req.path);
-	// grab unique db entry ID
-	console.log('152');
-	var id = path.parse(req.path).base;
-	console.log('id: ' + id);
-	helprequests.findById(id)
-		.then(function(found) {
-			if (!found) {
-				return res.send('No entry found for _id: ' + id);
-			}
-			return res.send(found);
-		});
-});
+// app.get('/survey/*', function(req, res, next) {
+// 	console.log(req.path);
+// 	// grab unique db entry ID
+// 	console.log('152');
+// 	var id = path.parse(req.path).base;
+// 	console.log('id: ' + id);
+// 	helprequests.findById(id)
+// 		.then(function(found) {
+// 			if (!found) {
+// 				return res.send('No entry found for _id: ' + id);
+// 			}
+// 			return res.send(found);
+// 		});
+// });
 
 // static files
 app.use(express.static('./public'));
