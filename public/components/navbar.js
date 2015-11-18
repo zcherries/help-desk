@@ -38,7 +38,7 @@ var userData = [
     username: 'default-user', 
     slack: '#', 
     github: '#', 
-    urls: [{text:'My Cohort',link:'#'},{text:'slackIt',link:'#'},{text:'gitHubIt',link:'#'},{text:'reactIt',link:'#'},{text:'nodeIt',link:'3'}]
+    urls: [{text:'My Cohort',link:'http://localhost:8000/student/class-roster.html'},{text:'slackIt',link:'#'},{text:'gitHubIt',link:'#'},{text:'reactIt',link:'#'},{text:'nodeIt',link:'3'}]
   },
 ];
 
