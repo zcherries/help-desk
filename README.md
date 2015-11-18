@@ -5,6 +5,14 @@ Project X: Our team's goal is to revamp Makersquare's current Help Desk applicat
 
 Tech Stack
 
+###Start me up!
+```
+# from the project root directory...
+$ mongod 
+$ nodemon server/server.js
+
+```
+
 We use Babel to transpile ES6 and JSX code. For development purposes, we recommend using an in-browser transpiler offered by a CDN. But for production, we recommend precompiling your code prior to deploying.
 
 Front-End:
