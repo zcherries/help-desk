@@ -30,7 +30,7 @@ var NavUser = React.createClass({
     return (
         <div>
         <p onClick={this.show} role="button" className="dropdown-toggle" data-toggle="dropdown"> Welcome, {placeholder[0].username} <span className="caret"></span> </p>
-        <ul className={"dropdown-menu" + (this.state.listVisible ? <ul>{userListItems}</ul> : "" )}>{userListItems}</ul>
+        <ul id='dropdown' className={"dropdown-menu" + (this.state.listVisible ? <ul>{userListItems}</ul> : "" )}>{userListItems}</ul>
         
         </div>
     )
@@ -61,11 +61,11 @@ var NavOrg = React.createClass({
   },
   render: function() {
     var orgListItems = this.props.data.map(function(item) {
-      return <span key={item.id}><a href="{item.link}">{item.title}</a>  |  </span>;
+      return <span key={item.id}><a href="{item.link}">{item.title}</a></span>;
     });
     return (
       <div>
-        <div>{orgListItems}</div>
+        <div className='org-list'>{orgListItems}</div>
       </div>
     ) 
   }
