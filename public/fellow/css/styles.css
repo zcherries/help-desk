@@ -7,6 +7,11 @@
 	font-family:BebasNeue;
 	src:url('../../student/css/BebasNeue.otf');
 }
+
+.bug-container {
+
+}
+
 #bug-compose {
 	margin-left: 700px;
 	margin-top: 550px;
@@ -63,13 +68,13 @@
 }
 
 @keyframes fade {
-	from {background-color:#f2f2de;}
-	to{background-color:white;}
+	from {background-color:#fbfdd5;}
+	to{background-color:#fefff6;}
 }
 
 #is-helping {
 	font-family: Gotham-Book;
-	background-color:#f2f2de;
+	background-color:#fbfdd5;
 	animation-name:fade;
 	animation-duration:2s;
 	animation-iteration-count:infinite;
