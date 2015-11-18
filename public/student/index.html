@@ -19,7 +19,6 @@
       console.log('working...');
       socket.on('fellow-closed', function(hrObj) {
         alert('Your Help Request was recently closed. Please fill out the feedback survey');
-        console.log('hrObj: ' + JSON.stringify(hrObj));
         var redirectURL = 'http://localhost:8000/student/feedback-survey.html?' + hrObj._id;
         window.location.replace(redirectURL);
         // serve the feedback survey
