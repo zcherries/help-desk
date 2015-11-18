@@ -38,9 +38,6 @@ io.on('connection', function (socket) {
   	console.log(JSON.stringify(hrObj));
   	closeHelpRequest(hrObj);
   });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
 });
 /* -- END socket IO -- */
 
@@ -51,14 +48,14 @@ mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-	// connect to a collection
+	// connect to collections
 	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
 	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
 });
 /* -- END mongo setup -- */
 
 
-// helper functions
+// Help Request helper functions
 var acceptHelpRequest = function(hrObj) {
 	var conditions = { _id: hrObj._id },
 			update = { $set: { accepted: true, assignedFellow: hrObj.name } },
@@ -79,12 +76,12 @@ var closeHelpRequest = function(hrObj) {
 			options = { multi: false };
 
 	helprequests.update(conditions, update, options, callback);
-	sendFeedbackSurvey(hrObj);
 
 	function callback (err, numAffected) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
-		socketRef.emit('fellow-closed');
+		// send feedback survey
+		socketRef.broadcast.emit('fellow-closed', hrObj);
 	}
 };
 var addFeedbackSurvey = function(hrObj) {
