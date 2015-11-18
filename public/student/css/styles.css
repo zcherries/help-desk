@@ -25,6 +25,15 @@ body {
 	height:500px;
 }
 
+#table-contents-pic {
+	width:700px;
+	height:100px;
+}
+#todays-sprint {
+	width:700px;
+	height:100px;
+}
+
 #dropdown {
 	position:absolute;
 	background-color:white;
@@ -63,12 +72,24 @@ a:hover {
 
 /*asldfkj*/
 
-/*.sidebar {
-	margin-left:-1000px;
+.sidebar {
+	/*display:none;*/
+	/*margin-top:-1000px;*/
+	/*margin-left:-1000px;*/
+}
+
+/*.placeholder {
+	width:120px;
+	height:80px;
 }*/
 
+#place-img {
+	width:70px;
+	height:50px;
+}
+
 #submit {
-	margin-left:280px;
+	margin-left:320px;
 	font-family:Gotham-Book;
 	background-color:#9eb4b1;
 	color:white;
@@ -80,14 +101,16 @@ a:hover {
 }
 
 #header {
-	margin-left:20px;
+	text-align:center;
+	/*margin-left:20px;*/
 	color:#748583;
 	font-family:BebasNeue;
 	font-size:50px;
 }
 
 #header2{
-	margin-left:40px;
+	text-align:center;
+	/*margin-left:40px;*/
 	font-size:35px;
 	color:#9eb4b1;
 	margin-top:0px;
@@ -102,6 +125,7 @@ a:hover {
 
 #shoutout-text {
 	font-family:Gotham-Book;
+	margin-left:40px;
 	width:350px;
 }
 
