@@ -3,14 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title>Feedback Survey</title>
-  </head>
-  <body>
-
-  	<div id="container">
-	    <div id="react-mountpoint">
-	    </div>
-		</div>
-
     <link rel="stylesheet" href="./css/styles.css" />
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
@@ -19,18 +11,29 @@
     <script>console.log('babel loaded');</script>
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
    	<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+  </head>
+  <body>
 
-  <div class='container'>
-  <div class='row'>
-    <div id="navbar"></div>
-  </div>
-  <div class='row makewide col-sm-4'>
-    <div id="feedback-survey"></div>
-  </div>
-  <div id="app">
-  </div>
-</div>
+  <div class="container">
+    <div class="row">
+      <div class="sidebar col-sm-4">
+        <div class="row help-bar">
+          <div id="feedback-survey"></div>
+        </div>
+        <div class="row fellow-bar">
+          <div id="fellow-status"></div>
+        </div>
+      </div>
 
+      <div class="main-bar col-sm-8">
+        <div id="navbar"></div>
+        <div id="content"></div>
+        <div id="app"></div>
+      </div>
+    </div>
+  </div>
+
+    <script type="text/babel" src="../components/navbar.js"></script>
     <script type="text/babel" src="../components/feedback-survey.js"></script>
   </body>
 </html>
