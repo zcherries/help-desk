@@ -73,7 +73,6 @@
       </form> 
       <RenderTags data={this.state.inputData} />
       </div>
-
       );
     }
   });
