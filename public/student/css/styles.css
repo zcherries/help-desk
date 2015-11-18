@@ -11,6 +11,35 @@ body {
 	font-family:Gotham-Book;
 }
 
+.navbar {
+	margin: 0 auto;
+}
+
+#dropdown {
+	position:absolute;
+}
+
+a {
+	color:black;
+	text-decoration:none;
+	font-family:BebasNeue;
+	font-size:24px;
+	padding-left:7px;
+	padding-right:7px;
+}
+
+a:hover {
+	text-decoration:none;
+	color:#cccccc;
+}
+
+.dropdown-toggle {
+	padding-left:7px;
+	font-family:BebasNeue;
+	font-size: 24px;
+	color:#748583;
+}
+
 .box {
 	box-sizing: border-box;
 }
@@ -134,12 +163,12 @@ body {
 }
 
 #request-submit {
-	width: 165px;
-	height:35px;
+	width: 140px;
+	height:40px;
 	background-color:#9eb4b1;
 	color:white;
 	border:none;
-	margin-left:205px;
+	margin-left:157px;
 }
 
 #input-submit {
@@ -160,7 +189,7 @@ body {
 	/*font-family:Gotham-Book;*/
 	margin-top: 5px;
 	margin-right: 5px;
-	width: 285px;
+	width: 205px;
 	margin-bottom:10px;
 	border-bottom-color:#cccccc;
 	border-left: none;
