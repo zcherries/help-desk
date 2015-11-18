@@ -1,14 +1,32 @@
 @font-face {
 	font-family:Gotham-Book;
-	src:url('.../student/css/Gotham-Book.ttf');
+	src: url('../../student/css/Gotham-book.ttf');
 }
 
 @font-face {
 	font-family:BebasNeue;
-	src:url('.../student/css/BebasNeue.otf');
+	src:url('../../student/css/BebasNeue.otf');
+}
+
+.form-control {
+	width:350px;
+}
+
+#submit {
+	border:none;
+	color:white;
+	background-color:#9eb4b1;
+}
+
+.text-center2 {
+	text-align:center;
+	font-size: 50px;
+	font-family:BebasNeue;
+	color:#748583;
 }
 
 .db-entry {
+	/*font-family:Gotham-Book;*/
 	-moz-box-sizing: border-box;
   box-sizing: border-box;
 	padding: 7px 10px;
@@ -16,7 +34,7 @@
 	display: inline-block;
 	font-family: monospace;
 	border-radius: 3px;
-	background-color: #DEDEDE;
+	background-color: #f2f2de;
 	color: #302F33;
 	cursor: default;
 }
@@ -37,3 +55,25 @@
 	font-family:BebasNeue;
 	color:#9eb4b1;
 }
+
+@keyframes fade {
+	from {background-color:#f2f2de;}
+	to{background-color:white;}
+}
+
+#is-helping {
+	font-family: Gotham-Book;
+	background-color:#f2f2de;
+	animation-name:fade;
+	animation-duration:2s;
+	animation-iteration-count:infinite;
+}
+
+#needs-help {
+	font-family:Gotham-Book;
+}
+
+#helped {
+	font-family:Gotham-Book;
+}
+

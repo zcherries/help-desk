@@ -38,7 +38,7 @@
         <div id="bug-compose">
           <form method="post" onSubmit={ this.handleSubmit }>
             <textarea ref="bugMessage" className="form-control" rows="3" placeholder="Describe the bug..."></textarea>
-            <input type="submit" value="submit" />
+            <input type="submit" id='submit' value="submit" />
           </form>
         </div>
       );
