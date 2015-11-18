@@ -131,6 +131,19 @@ app.get('/data', function(req, res, next) {
 		return;
 	});
 });
+// retrieve Help Request
+app.get('/data/*', function(req, res, next) {
+	// grab unique db entry ID
+	var id = path.parse(req.path).base;
+	console.log('id: ' + id);
+	helprequests.findById(id)
+		.then(function(found) {
+			if (!found) {  
+				return res.send('No entry found for _id: ' + id);
+			}
+			return res.send(found);
+		});
+});
 // delete Help Requests
 app.post('/data/delete', function(req, res, next) {
 	console.log('req.body: ' + JSON.stringify(req.body));
@@ -174,20 +187,7 @@ app.post('/data/bugs/delete', function(req, res, next) {
 	});
 });
 
-// app.get('/survey/*', function(req, res, next) {
-// 	console.log(req.path);
-// 	// grab unique db entry ID
-// 	console.log('152');
-// 	var id = path.parse(req.path).base;
-// 	console.log('id: ' + id);
-// 	helprequests.findById(id)
-// 		.then(function(found) {
-// 			if (!found) {
-// 				return res.send('No entry found for _id: ' + id);
-// 			}
-// 			return res.send(found);
-// 		});
-// });
+
 
 // static files
 app.use(express.static('./public'));
