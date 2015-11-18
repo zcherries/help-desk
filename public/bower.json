@@ -1,0 +1,22 @@
+{
+  "name": "project-november-front-end",
+  "description": "none",
+  "main": "none",
+  "authors": [
+    "William Carroll"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/wpcarro/project-november",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "underscore": "~1.8.3"
+  }
+}
