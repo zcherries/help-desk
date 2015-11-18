@@ -4,7 +4,7 @@
 }
 
 @font-face {
-	font-family:Bebas-Neue;
+	font-family:BebasNeue;
 	src: url('./BebasNeue.otf');
 }
 body {
@@ -35,7 +35,7 @@ body {
 	margin-left:20px;
 	color:#748583;
 	/*color:#9eb4b1;*/
-	font-family:Bebas-Neue;
+	font-family:BebasNeue;
 	font-size:50px;
 }
 
@@ -45,11 +45,11 @@ body {
 	/*color:#748583;*/
 	color:#9eb4b1;
 	margin-top:0px;
-	font-family:Bebas-Neue;
+	font-family:BebasNeue;
 }
 
 #shoutout {
-	font-family:Bebas-Neue;
+	font-family:BebasNeue;
 	color:#9eb4b1;
 	text-align:right;
 }
@@ -60,9 +60,17 @@ body {
 }
 
 #notification {
+	font-size:15px;
 	text-align:center;
 	font-family:Gotham-Book;
 	/*margin-left:25px;*/
+}
+
+#assessment {
+	text-align:center;
+	font-family:Gotham-Book;
+	font-size:15px;
+	font-weight:bolder;
 }
 .survey-form {
 	/*width: 500px;*/

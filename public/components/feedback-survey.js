@@ -130,7 +130,7 @@
 					<h1 id='header'>Hi, { formData.author }</h1>
           <h1 id='header2'>How unstuck are you?</h1>
 					<p id='notification'>Our system notified us that your Help Desk Request ended: { formData.timeclosed }</p>
-          <h3>Please assess { formData.assignedFellow + apostrophe }s proficiency in the following</h3>
+          <h3 id='assessment'>Please assess { formData.assignedFellow + apostrophe }s proficiency in the following:</h3>
 					<RatingContainer tags={ formData.tags } callbackParent={ this.onRatingChange } />
 					<h3 id='shoutout'>Any shout outs?</h3>
 					<form method="post" onSubmit={ this.handleSubmit }>

@@ -1,3 +1,13 @@
+@font-face {
+	font-family:Gotham-Book;
+	src:url('.../student/css/Gotham-Book.ttf');
+}
+
+@font-face {
+	font-family:BebasNeue;
+	src:url('.../student/css/BebasNeue.otf');
+}
+
 .db-entry {
 	-moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -21,4 +31,9 @@
 .delete:hover {
 	color: red;
 	cursor: pointer;
+}
+
+.text-center {
+	font-family:BebasNeue;
+	color:#9eb4b1;
 }
