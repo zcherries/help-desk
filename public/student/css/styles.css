@@ -11,12 +11,24 @@ body {
 	font-family:Gotham-Book;
 }
 
-.navbar {
-	margin: 0 auto;
+#today-sprint {
+	font-family:BebasNeue;
+	font-size:50px;
+	color:black;
+}
+#mock {
+	border:#cccccc;
+}
+
+#table-contents {
+	width:700px;
+	height:500px;
 }
 
 #dropdown {
 	position:absolute;
+	background-color:white;
+	list-style:none;
 }
 
 a {
@@ -45,8 +57,15 @@ a:hover {
 }
 
 .container {
-	/*width: 100px;*/
+	margin: 0 auto;
+/*	background-image: url('tableofcontents.png')*/
 }
+
+/*asldfkj*/
+
+/*.sidebar {
+	margin-left:-1000px;
+}*/
 
 #submit {
 	margin-left:280px;
@@ -63,7 +82,6 @@ a:hover {
 #header {
 	margin-left:20px;
 	color:#748583;
-	/*color:#9eb4b1;*/
 	font-family:BebasNeue;
 	font-size:50px;
 }
@@ -71,7 +89,6 @@ a:hover {
 #header2{
 	margin-left:40px;
 	font-size:35px;
-	/*color:#748583;*/
 	color:#9eb4b1;
 	margin-top:0px;
 	font-family:BebasNeue;
@@ -212,6 +229,15 @@ a:hover {
 	height:150px;
 	padding-top: 15px;
 
+}
+
+/*#navbar {
+	position:static;
+}
+*/
+#align-left {
+	position:absolute;
+	/*float:left;*/
 }
 
 .help-text {
