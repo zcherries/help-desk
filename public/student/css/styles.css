@@ -27,6 +27,8 @@ body {
 
 #dropdown {
 	position:absolute;
+	background-color:white;
+	list-style:none;
 }
 
 a {
@@ -58,6 +60,8 @@ a:hover {
 	margin: 0 auto;
 /*	background-image: url('tableofcontents.png')*/
 }
+
+/*asldfkj*/
 
 /*.sidebar {
 	margin-left:-1000px;
