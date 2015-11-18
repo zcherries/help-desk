@@ -84,6 +84,10 @@
   // Component Props:
   // formData: JSON object to simulate data from db
   var SurveyForm = React.createClass({
+    clearForm: function() {
+      $('.thumbs').removeClass('clicked-true');
+      this.refs.shoutout.value = '';
+    },
     handleSubmit: function(e) {
       e.preventDefault();
       var shoutout = this.refs.shoutout;
@@ -94,12 +98,15 @@
       for (var key in _formData.tags) {
         feedback += key + ':' + _formData.tags[key] + '\n';
       }
-      feedback.timesubmitted = new Date();
       data.feedback = feedback;
+      // feedback.timesubmitted = new Date();
       
       $.post('/feedback', data, function(response) {
         console.log('successfully posted feedback! response: ' + JSON.stringify(response));
       });
+      this.clearForm();
+      var redirectURL = 'http://localhost:8000/student/';
+      window.location.replace(redirectURL);
     },
     onRatingChange: function(state) {
       this.setState(state);
