@@ -8,6 +8,31 @@
 	src:url('../../student/css/BebasNeue.otf');
 }
 
+#dropdown {
+	position:absolute;
+}
+
+a {
+	color:black;
+	text-decoration:none;
+	font-family:BebasNeue;
+	font-size:24px;
+	padding-left:7px;
+	padding-right:7px;
+}
+
+a:hover {
+	text-decoration:none;
+	color:#cccccc;
+}
+
+.dropdown-toggle {
+	padding-left:7px;
+	font-family:BebasNeue;
+	font-size: 24px;
+	color:#748583;
+}
+
 .bug-container {
 
 }
@@ -69,7 +94,7 @@
 
 @keyframes fade {
 	from {background-color:#fbfdd5;}
-	to{background-color:#fafbe3;}
+	to{background-color:#fcfcf0;}
 }
 
 #is-helping {
