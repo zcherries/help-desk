@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mockup</title>
+    <!-- Not present in the tutorial. Just for basic styling. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+  </head>
+  <body>
+    <h1>Hello Marcus Welcome to MakerSquare</h1>
+    <h2>Github</h2>
+    <div id="github" style="overflow-y: scroll; width:800px; height:300px;"></div>
+    <h2>Today's Sprint</h2>
+    <div style="overflow-y: scroll; width:800px; height:300px;"><img src="./Mockups/datastructures.png" ></img></div>
+    <script type="text/javascript">
+         $(document).ready(function() {
+            $("#github").load("./Mockups/marcus.html");   
+         });
+      </script>
+    <!--<script type="text/babel" src="scripts/example.js"></script>-->
+    <script type="text/babel">
+      // To get started with this tutorial running your own code, simply remove
+      // the script tag loading scripts/example.js and start writing code here.
+      // var data = [
+      // {author: "Pete Hunt", text: "This is one hrequest"},
+      // {author: "Jordan Walke", text: "This is another hrequest"}
+      // ];
+
+      
+
+      // var CommentBox = React.createClass({
+      //   loadCommentsFromServer: function() {
+      //     $.ajax({
+      //       url: this.props.url,
+      //       dataType: 'json',
+      //       cache: false,
+      //       success: function(data){
+      //         this.setState({data: data});
+      //       }.bind(this),
+      //       error: function(xhr, status, err) {
+      //         console.error(this.props.url, status, err.toString());
+      //       }.bind(this)
+      //     });
+      //   },
+
+      //   handleCommentSubmit: function(comment) {
+      //     //TODO: submit to the server and refresh the list
+      //     $.ajax({
+      //       url: this.props.url,
+      //       dataType: 'json',
+      //       type: 'Post',
+      //       data: comment,
+      //       success: function(data){
+      //         this.setState({data: data});
+      //       }.bind(this),
+      //       error: function(xhr, status, err) {
+      //         console.error(this.props.url, status, err.toString());
+      //       }.bind(this)
+      //     });
+      //   },
+
+      //   getInitialState: function() {
+      //     return {data: []};
+      //   },
+
+      //   componentDidMount: function() {
+      //     this.loadCommentsFromServer();
+      //     setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+      //   },
+
+      //   render: function() {
+      //     return (
+      //       <div className="commentBox">
+      //         <h1>HRequests(functional build)</h1>
+      //         <CommentList data={this.state.data} />
+      //         <CommentForm  onCommentSubmit={this.handleCommentSubmit}/>
+      //       </div>
+      //       );
+      //   }
+      // });
+
+
+
+      // ReactDOM.render(
+      //   <CommentBox  url ="/api/comments" pollInterval={2000} />,
+      //   document.getElementById('content')
+      //   );
+    </script>
+  </body>
+</html>
