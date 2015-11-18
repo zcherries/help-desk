@@ -1,11 +1,14 @@
 var serverHelpers = require('./server-helpers.js');
 var express = require('express');
 var http = require('http');
+var path = require('path');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var dbHelpers = require('./db/db-helpers.js');
 var HelpRequest = dbHelpers.HelpRequest;
 var helpReqSchema = dbHelpers.helpReqSchema;
+var BugAlert = dbHelpers.BugAlert;
+var bugAlertSchema = dbHelpers.bugAlertSchema;
 
 var app = express();
 var server = http.createServer(app);
@@ -19,12 +22,7 @@ app.use(bodyParser());
 app.use(serverHelpers.printReqInfo);
 
 /* -- BEGIN socket IO -- */
-
-var handleEntryAdded;
-var handleEntryDeleted;
-var socketRef;
-
-
+var socketRef; // keep this for closure ;)
 io.on('connection', function (socket) {
 	console.log('new connection!');
 	socketRef = socket;
@@ -40,21 +38,22 @@ io.on('connection', function (socket) {
   	console.log(JSON.stringify(hrObj));
   	closeHelpRequest(hrObj);
   });
-
   socket.on('my other event', function (data) {
     console.log(data);
   });
 });
 /* -- END socket IO -- */
 
+
 /* -- BEGIN mongo setup --*/
-var helprequests;
+var helprequests, bugalerts; // Collection names
 mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function(callback) {
+db.once('open', function() {
 	// connect to a collection
-	helprequests = mongoose.model('HelpRequest', helpReqSchema);
+	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
+	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
 });
 /* -- END mongo setup -- */
 
@@ -67,7 +66,6 @@ var acceptHelpRequest = function(hrObj) {
 
 	helprequests.update(conditions, update, options, callback);
 
-	// hopefully numAffected === 1
 	function callback (err, numAffected) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
@@ -75,20 +73,32 @@ var acceptHelpRequest = function(hrObj) {
 	}
 };
 var closeHelpRequest = function(hrObj) {
+	var timestamp = new Date();
 	var conditions = { _id: hrObj._id },
-			update = { $set: { closed: true } },
+			update = { $set: { closed: true, timeclosed: timestamp } },
 			options = { multi: false };
 
 	helprequests.update(conditions, update, options, callback);
 
-	// hopefully numAffected === 1
 	function callback (err, numAffected) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
 		socketRef.emit('fellow-closed');
 	}
 };
+var addFeedbackSurvey = function(hrObj) {
+	var conditions = { _id: hrObj._id },
+			update = { $set: { feedback: hrObj.feedback } },
+			options = { multi: false };
 
+	helprequests.update(conditions, update, options, callback);
+
+	function callback (err, numAffected) {
+		if (err) console.error(err);
+		console.log('successfully updated help request');
+		socketRef.emit('fellow-closed');
+	}
+};
 
 /* -- BEGIN http server -- */
 app.post('/', function(req, res, next) {
@@ -107,16 +117,23 @@ app.post('/', function(req, res, next) {
 	});
 });
 
-// viewing the db
+// feedback forms
+app.post('/feedback', function(req, res, next) {
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var id = req.body.id;
+	addFeedbackSurvey(req.body);
+});
+
+// retrieve Help Requests
 app.get('/data', function(req, res, next) {
-	console.log('fetching from DB...');
+	console.log('fetching from helprequests Collection...');
 	var html = '';
 	helprequests.find(function(err, objects) {
 		res.send(objects);
 		return;
 	});
 });
-
+// delete Help Requests
 app.post('/data/delete', function(req, res, next) {
 	console.log('req.body: ' + JSON.stringify(req.body));
 	var id = req.body.id;
@@ -125,6 +142,53 @@ app.post('/data/delete', function(req, res, next) {
 		console.log('successfully removed: ' + removed);
 		res.send(req.body);
 	});
+});
+
+// retrieve BugAlerts
+app.get('/data/bugs', function(req, res, next) {
+	console.log('fetching from bugalerts Collection...');
+	var html = '';
+	bugalerts.find(function(err, objects) {
+		res.send(objects);
+		return;
+	});
+});
+// add new Bug Alert
+app.post('/data/bugs', function(req, res, next) {
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var newBugAlert = new BugAlert(req.body);
+	newBugAlert.save(function(err, newBugAlert) {
+		if(err) return console.error(err);
+		socketRef.emit('bugalert-added', { entryAdded: 'testing' })
+		newBugAlert.speak();
+		res.send(req.body);
+	});
+});
+
+// delete BugAlerts
+app.post('/data/bugs/delete', function(req, res, next) {
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var id = req.body.id;
+	bugalerts.findById(id).remove(function(err, removed) {
+		socketRef.emit('bugalert-deleted', removed);
+		console.log('successfully removed: ' + removed);
+		res.send(req.body);
+	});
+});
+
+app.get('/survey/*', function(req, res, next) {
+	console.log(req.path);
+	// grab unique db entry ID
+	console.log('152');
+	var id = path.parse(req.path).base;
+	console.log('id: ' + id);
+	helprequests.findById(id)
+		.then(function(found) {
+			if (!found) {
+				return res.send('No entry found for _id: ' + id);
+			}
+			return res.send(found);
+		});
 });
 
 // static files
