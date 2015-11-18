@@ -71,7 +71,7 @@
     },
     render: function() {
       return(
-        <div>
+        <div className='bug-container'>
           <BugCompose dataEndPoint={ this.props.dataEndPoint } />
           <Log bugs={ this.state.bugs } />
         </div>
