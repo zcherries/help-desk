@@ -8,26 +8,18 @@
   // testing
 
   var data = {
-    _id:"564b92444a2d3726550e55cf",
-    author:"William Carroll",
-    content:"help",
-    timesubmitted:"Tue Nov 17 2015 12:16:43 GMT-0800 (PST)",
-    timeclosed:"Tue Nov 17 2015 12:31:01 GMT-0800 (PST)",
+    _id:"",
+    author:"",
+    content:"",
+    timesubmitted:"",
+    timeclosed:"",
     accepted:false,
     closed:false,
-    assignedFellow:"Joe Nayigiziki",
+    assignedFellow:"",
     __v:0,
-    tags:["JavaScript", "MongoDB", "React", "Express", "Node.js"],
-    feedback:"empty"
+    tags:[],
+    feedback:""
   };
-
-  // var data = {
-  //   author: "William Carroll",
-  //   content: "I need help with Mongo and React",
-  //   tags: ["Mongo", "React", "JavaScript"],
-  //   timesubmitted: "4:52PM, Saturday",
-  //   timeclosed: "5:00PM, Saturday"
-  // };
 
   // Component Props:
   // tag: (e.g. "Mongo" or "JavaScript" or "mySQL")
@@ -112,26 +104,36 @@
     onRatingChange: function(state) {
       this.setState(state);
     },
-    componentWillMount: function() {
-      _formData.author = this.props.formData.author;
+    componentDidMount: function() {
+    	var id = window.location.href.split('?');
+    	id = id[id.length-1];
+    	console.log('id: ' + id);
+    	$.get('http://localhost:8000/data/' + id, function(hrObj) {
+    		console.log('data: ' + JSON.stringify(data));
+    		this.setState({
+    			data: hrObj
+    		});
+    		_formData.author = hrObj.author;
+    	}.bind(this));
     },
     getInitialState: function() {
       return {
         thumbsUp: false,
         thumbsMiddle: false,
-        thumbsDown: false
+        thumbsDown: false,
+        data: data
       };
     },
     render: function() {
-      var formData = this.props.formData;
+      var data = this.state.data;
       var apostrophe = "\'".charAt(0);
 			return (
 				<div className="survey-form">
-					<h1 id='header'>Hi, { formData.author }</h1>
+					<h1 id='header'>Hi, { data.author }</h1>
           <h1 id='header2'>How unstuck are you?</h1>
-					<p id='notification'>Our system notified us that your Help Desk Request ended: { formData.timeclosed }</p>
-          <h3 id='assessment'>Please assess { formData.assignedFellow + apostrophe }s proficiency in the following:</h3>
-					<RatingContainer tags={ formData.tags } callbackParent={ this.onRatingChange } />
+					<p id='notification'>Our system notified us that your Help Desk Request ended: { data.timeclosed }</p>
+          <h3 id='assessment'>Please assess { data.assignedFellow + apostrophe }s proficiency in the following:</h3>
+					<RatingContainer tags={ data.tags } callbackParent={ this.onRatingChange } />
 					<h3 id='shoutout'>Any shout outs?</h3>
 					<form method="post" onSubmit={ this.handleSubmit }>
 						<textarea ref="shoutout" id='shoutout-text' className="form-control" rows="3" placeholder="Additional feedback is appreciated..."></textarea>
@@ -143,7 +145,7 @@
 	});
 
   ReactDOM.render(
-  	<SurveyForm formData={ data } />,
+  	<SurveyForm />,
   	document.getElementById('feedback-survey')
   );
 })();
