@@ -1,19 +1,33 @@
 (function() {
   // global vars
   var _formData = {
-    author: '',
-    tags: {},
     shoutout: '',
-    timesubmitted: '5:30PM, Saturday',
+    tags: {},
+    timesubmitted: '5:30PM, Saturday'
   };
+  // testing
 
   var data = {
-    author: "William Carroll",
-    content: "I need help with Mongo and React",
-    tags: ["Mongo", "React", "JavaScript"],
-    timesubmitted: "4:52PM, Saturday",
-    timeclosed: "5:00PM, Saturday"
+    _id:"564b92444a2d3726550e55cf",
+    author:"William Carroll",
+    content:"help",
+    timesubmitted:"Tue Nov 17 2015 12:16:43 GMT-0800 (PST)",
+    timeclosed:"Tue Nov 17 2015 12:31:01 GMT-0800 (PST)",
+    accepted:false,
+    closed:false,
+    assignedFellow:"Joe Nayigiziki",
+    __v:0,
+    tags:["JavaScript", "MongoDB", "React", "Express", "Node.js"],
+    feedback:"empty"
   };
+
+  // var data = {
+  //   author: "William Carroll",
+  //   content: "I need help with Mongo and React",
+  //   tags: ["Mongo", "React", "JavaScript"],
+  //   timesubmitted: "4:52PM, Saturday",
+  //   timeclosed: "5:00PM, Saturday"
+  // };
 
   // Component Props:
   // tag: (e.g. "Mongo" or "JavaScript" or "mySQL")
@@ -25,6 +39,7 @@
         thumbsMiddle: false,
         thumbsDown: false
       });
+
       var state = {};
       state[e.target.id] = true;
       this.setState(state);
@@ -82,6 +97,17 @@
       var shoutout = this.refs.shoutout;
       _formData.shoutout = shoutout.value;
       console.log('_formData: ' + JSON.stringify(_formData));
+
+      var feedback = 'shoutout:' + _formData.shoutout + '\n';
+      for (var key in _formData.tags) {
+        feedback += key + ':' + _formData.tags[key] + '\n';
+      }
+      feedback.timesubmitted = new Date();
+      data.feedback = feedback;
+      
+      $.post('/feedback', data, function(response) {
+        console.log('successfully posted feedback! response: ' + JSON.stringify(response));
+      });
     },
     onRatingChange: function(state) {
       this.setState(state);
@@ -98,11 +124,13 @@
     },
     render: function() {
       var formData = this.props.formData;
+      var apostrophe = "\'".charAt(0);
 			return (
 				<div className="survey-form">
 					<h1 id='header'>Hi, { formData.author }</h1>
           <h1 id='header2'>How unstuck are you?</h1>
 					<p id='notification'>Our system notified us that your Help Desk Request ended: { formData.timeclosed }</p>
+          <h3>Please assess { formData.assignedFellow + apostrophe }s proficiency in the following</h3>
 					<RatingContainer tags={ formData.tags } callbackParent={ this.onRatingChange } />
 					<h3 id='shoutout'>Any shout outs?</h3>
 					<form method="post" onSubmit={ this.handleSubmit }>

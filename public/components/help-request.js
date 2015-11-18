@@ -4,19 +4,25 @@
     content: '',
     tags: [],
     timesubmitted: '',
+    timeclosed: '',
     accepted: false,
     closed: false,
-    assignedFellow: 'no fellow assigned'
+    assignedFellow: 'no fellow assigned',
+    feedback: 'empty'
   };
 
   var HelpRequestTab = React.createClass({
+    clearForm: function() {
+      this.refs.content.value = '';
+    },
     sendRequest: function(e) {
       e.preventDefault();
       _formData.content = this.refs.content.value.trim()
       _formData.timesubmitted = new Date();
       $.post('/', _formData, function(data) {
         console.log('successfully posted! data: ' + JSON.stringify(data));
-      });
+        this.clearForm();
+      }.bind(this));
     },
     render: function() {
       return (
@@ -35,6 +41,14 @@
       return {
         inputData: [],
       };
+    },
+    removeTag: function(tagname) {
+      var removeIdx = this.state.inputData.indexOf(tagname);
+      var cp = this.state.inputData.slice();
+      cp.splice(removeIdx, 1);
+      this.setState({
+        inputData: cp
+      });
     },
     handleSubmit: function (event) {
       event.preventDefault();
@@ -65,14 +79,15 @@
 
   var RenderTags = React.createClass({
     closeTag: function (e) {
+      var tag = $(e.target).closest('div').find('span').text();
+      this.props.updateParentState(tag);
       $(e.target).closest('div').remove();
-      //remove from the database as well
     },
     render: function () {
       var tagNodes = this.props.data.map(function(tag, idx) {
         return (
-          <div className='chip' onClick={this.closeTag} key={idx}>{tag.text}
-            <i className='material-icons'>close</i>
+          <div className='chip' tagName={ tag.text } onClick={this.closeTag} key={idx}>
+            <span>{tag.text}</span><i className='material-icons'>close</i>
           </div>
           );
       }.bind(this))
