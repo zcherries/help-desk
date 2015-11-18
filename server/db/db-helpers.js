@@ -16,9 +16,21 @@ var helpReqSchema = module.exports.helpReqSchema = mongoose.Schema({
 	feedback: String
 });
 
+var bugAlertSchema = module.exports.bugAlertSchema = mongoose.Schema({
+	author: String,
+	content: String,
+	timesubmitted: String
+});
+
 helpReqSchema.methods.speak = function() {
 	console.log('-- Help Request --');
 	console.log(JSON.stringify(this));
 };
 
+bugAlertSchema.methods.speak = function() {
+	console.log('-- Bug Alert --');
+	console.log(JSON.stringify(this));
+};
+
 var HelpRequest = module.exports.HelpRequest = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
+var BugAlert = module.exports.BugAlert = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');

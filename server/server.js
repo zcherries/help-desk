@@ -7,6 +7,8 @@ var mongoose = require('mongoose');
 var dbHelpers = require('./db/db-helpers.js');
 var HelpRequest = dbHelpers.HelpRequest;
 var helpReqSchema = dbHelpers.helpReqSchema;
+var BugAlert = dbHelpers.BugAlert;
+var bugAlertSchema = dbHelpers.bugAlertSchema;
 
 var app = express();
 var server = http.createServer(app);
@@ -20,12 +22,7 @@ app.use(bodyParser());
 app.use(serverHelpers.printReqInfo);
 
 /* -- BEGIN socket IO -- */
-
-var handleEntryAdded;
-var handleEntryDeleted;
-var socketRef;
-
-
+var socketRef; // keep this for closure ;)
 io.on('connection', function (socket) {
 	console.log('new connection!');
 	socketRef = socket;
@@ -41,21 +38,22 @@ io.on('connection', function (socket) {
   	console.log(JSON.stringify(hrObj));
   	closeHelpRequest(hrObj);
   });
-
   socket.on('my other event', function (data) {
     console.log(data);
   });
 });
 /* -- END socket IO -- */
 
+
 /* -- BEGIN mongo setup --*/
-var helprequests;
+var helprequests, bugalerts; // Collection names
 mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function(callback) {
+db.once('open', function() {
 	// connect to a collection
-	helprequests = mongoose.model('HelpRequest', helpReqSchema);
+	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
+	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
 });
 /* -- END mongo setup -- */
 
@@ -126,16 +124,16 @@ app.post('/feedback', function(req, res, next) {
 	addFeedbackSurvey(req.body);
 });
 
-// viewing the db
+// retrieve Help Requests
 app.get('/data', function(req, res, next) {
-	console.log('fetching from DB...');
+	console.log('fetching from helprequests Collection...');
 	var html = '';
 	helprequests.find(function(err, objects) {
 		res.send(objects);
 		return;
 	});
 });
-
+// delete Help Requests
 app.post('/data/delete', function(req, res, next) {
 	console.log('req.body: ' + JSON.stringify(req.body));
 	var id = req.body.id;
@@ -146,16 +144,50 @@ app.post('/data/delete', function(req, res, next) {
 	});
 });
 
+// retrieve BugAlerts
+app.get('/data/bugs', function(req, res, next) {
+	console.log('fetching from bugalerts Collection...');
+	var html = '';
+	bugalerts.find(function(err, objects) {
+		res.send(objects);
+		return;
+	});
+});
+// add new Bug Alert
+app.post('/data/bugs', function(req, res, next) {
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var newBugAlert = new BugAlert(req.body);
+	newBugAlert.save(function(err, newBugAlert) {
+		if(err) return console.error(err);
+		socketRef.emit('bugalert-added', { entryAdded: 'testing' })
+		newBugAlert.speak();
+		res.send(req.body);
+	});
+});
+
+// delete BugAlerts
+app.post('/data/bugs/delete', function(req, res, next) {
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var id = req.body.id;
+	bugalerts.findById(id).remove(function(err, removed) {
+		socketRef.emit('bugalert-deleted', removed);
+		console.log('successfully removed: ' + removed);
+		res.send(req.body);
+	});
+});
+
 app.get('/survey/*', function(req, res, next) {
 	console.log(req.path);
 	// grab unique db entry ID
+	console.log('152');
 	var id = path.parse(req.path).base;
 	console.log('id: ' + id);
 	helprequests.findById(id)
-		.then(function(err, found) {
-			if (err) console.error(err);
-			console.log(found);
-			res.send(found);
+		.then(function(found) {
+			if (!found) {
+				return res.send('No entry found for _id: ' + id);
+			}
+			return res.send(found);
 		});
 });
 
