@@ -21,6 +21,10 @@ a {
 	padding-right:7px;
 }
 
+.org-list {
+	color:black;
+}
+
 a:hover {
 	text-decoration:none;
 	color:#cccccc;
