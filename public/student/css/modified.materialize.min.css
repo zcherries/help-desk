@@ -7,7 +7,11 @@
   line-height: 32px;
   padding: 0 12px;
   border-radius: 16px;
-  background-color: #e4e4e4; }
+  border-color:#000000;
+  background-color:white;
+  background-color: #e4e4e4; 
+  /*background-color:#cccccc;*/
+}
   .chip img {
     float: left;
     margin: 0 8px 0 -12px;
