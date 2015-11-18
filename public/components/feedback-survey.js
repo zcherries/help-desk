@@ -54,9 +54,9 @@
         <div className="rating">
           <p className="tag">{ this.props.tag }</p>
           <div className="thumbs-container">
-            <span id="thumbsDown" onClick={ this.handleClick } className="thumbs thumbs-down glyphicon glyphicon-thumbs-down"></span>
-            <span id="thumbsMiddle" onClick={ this.handleClick } className="thumbs thumbs-middle glyphicon glyphicon-thumbs-up"></span>
-            <span id="thumbsUp" onClick={ this.handleClick } className="thumbs thumbs-up glyphicon glyphicon-thumbs-up"></span>
+            <span id="thumbsDown" onClick={ this.handleClick } className={ 'clicked-'+ this.state.thumbsDown + ' thumbs thumbs-down glyphicon glyphicon-thumbs-down'}></span>
+            <span id="thumbsMiddle" onClick={ this.handleClick } className={ 'clicked-' + this.state.thumbsMiddle + ' thumbs thumbs-middle glyphicon glyphicon-thumbs-up'}></span>
+            <span id="thumbsUp" onClick={ this.handleClick } className={ 'clicked-' + this.state.thumbsUp + ' thumbs thumbs-up glyphicon glyphicon-thumbs-up'}></span>
           </div>
         </div>
       );
