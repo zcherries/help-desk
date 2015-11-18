@@ -6,34 +6,29 @@ var NavUser = React.createClass({
       listVisible: false
     };
   },
-
   select: function(item) {
     this.props.selected = item;
   },
-
   show: function() {
     this.setState({ listVisible: true });
     document.addEventListener("click", this.hide);
   },
-
   hide: function() {
     this.setState({ listVisible: false });
     document.removeEventListener("click", this.hide);
   },
-
   render: function() {
     var placeholder = this.props.data;
     var placeholderUrls = this.props.data[0].urls;
     var userListItems = placeholderUrls.map(function(item,idx) {
-      return <li key={idx}><a href="{item}">{item}</a> </li>;
+      return (<li key={idx}><a href={item.link}>{item.text}</a> </li>);
     });
     return (
         <div>
-        <p onClick={this.show} role="button" className="dropdown-toggle" data-toggle="dropdown"> Welcome, {placeholder[0].username} <span className="caret"></span> </p>
-        <ul id='dropdown' className={"dropdown-menu" + (this.state.listVisible ? <ul>{userListItems}</ul> : "" )}>{userListItems}</ul>
-        
+          <p onClick={this.show} role="button" className="dropdown-toggle" data-toggle="dropdown"> Welcome, {placeholder[0].username} <span className="caret"></span> </p>
+          <ul id='dropdown' className={"dropdown-menu" + (this.state.listVisible ? <ul>{userListItems}</ul> : "" )}>{userListItems}</ul>
         </div>
-    )
+    );
   }
 });
 
@@ -43,7 +38,7 @@ var userData = [
     username: 'default-user', 
     slack: '#', 
     github: '#', 
-    urls: ['My Cohort','slackIt', 'gitHubIt', 'reactIt', 'nodeIt']
+    urls: [{text:'My Cohort',link:'#'},{text:'slackIt',link:'#'},{text:'gitHubIt',link:'#'},{text:'reactIt',link:'#'},{text:'nodeIt',link:'3'}]
   },
 ];
 
