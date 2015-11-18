@@ -132,10 +132,10 @@ app.get('/data', function(req, res, next) {
 	});
 });
 // retrieve Help Request
-app.get('/data/*', function(req, res, next) {
+app.get('/data/id=*', function(req, res, next) {
+	console.log('here');
 	// grab unique db entry ID
-	var id = path.parse(req.path).base;
-	console.log('id: ' + id);
+	var id = path.parse(req.path).base.slice(3);
 	helprequests.findById(id)
 		.then(function(found) {
 			if (!found) {  

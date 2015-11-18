@@ -108,7 +108,7 @@
     	var id = window.location.href.split('?');
     	id = id[id.length-1];
     	console.log('id: ' + id);
-    	$.get('http://localhost:8000/data/' + id, function(hrObj) {
+    	$.get('http://localhost:8000/data/id=' + id, function(hrObj) {
     		console.log('data: ' + JSON.stringify(data));
     		this.setState({
     			data: hrObj
