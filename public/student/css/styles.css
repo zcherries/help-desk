@@ -214,11 +214,14 @@ a:hover {
 
 }
 
-
 .help-text {
 	font-family:BebasNeue;
 	color:#748583;
 	font-size: 75px;
 	/*padding-left:135px;*/
 	text-align:right;
+}
+
+.clicked-true {
+	color: green;
 }
