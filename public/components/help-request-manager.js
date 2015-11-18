@@ -26,7 +26,7 @@
 		render: function() {
 			var obj = this.props.obj;
 			var tags = obj.tags.map(function(tag, idx) {
-				return (<span key={ idx }>{ tag } </span>);
+				return (<span className="tag" key={ idx }>{ tag }</span>);
 			});
 			console.log('obj: ' + obj.accepted);
 			switch (this.props.status) {
@@ -34,8 +34,8 @@
 					return (
 						<div className="db-entry" id='needs-help' onClick={ this.handleClick }>
 							<p>{ obj.author } needs help with: </p>
-							<p>tags: { tags }</p>
 							<p>"{ obj.content }"</p>
+							<p>{ tags }</p>
 							<p>{ obj.timesubmitted }</p>
 						</div>
 					);
@@ -43,7 +43,7 @@
 					return (
 						<div className="db-entry" id='is-helping' onClick={ this.handleClick }>
 							<p>{ obj.assignedFellow } is helping { obj.author }</p>
-							<p>tags: { tags }</p>
+							<p>{ tags }</p>
 							<p>{ obj.timesubmitted }</p>
 						</div>
 					);
@@ -51,7 +51,7 @@
 					return (
 						<div className="db-entry" id='helped' onClick={ this.handleClick }>
 							<p>{ obj.assignedFellow } helped { obj.author } with:</p>
-							<p>tags: { tags }</p>
+							<p>{ tags }</p>
 							<p>{ obj.timesubmitted }</p>
 						</div>
 					);
