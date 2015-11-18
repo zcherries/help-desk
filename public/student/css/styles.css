@@ -12,7 +12,7 @@ body {
 }
 
 .navbar {
-	margin: 0 auto;
+	margin: 0 ;
 }
 
 #dropdown {
@@ -45,7 +45,6 @@ a:hover {
 }
 
 .container {
-	/*width: 100px;*/
 }
 
 #submit {
