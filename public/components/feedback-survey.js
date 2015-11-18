@@ -51,7 +51,6 @@
             <span id="thumbsMiddle" onClick={ this.handleClick } className="thumbs thumbs-middle glyphicon glyphicon-thumbs-up"></span>
             <span id="thumbsUp" onClick={ this.handleClick } className="thumbs thumbs-up glyphicon glyphicon-thumbs-up"></span>
           </div>
-          <code>{ selected }</code>
         </div>
       );
     }
@@ -101,13 +100,14 @@
       var formData = this.props.formData;
 			return (
 				<div className="survey-form">
-					<h1>Hi, { formData.author }. How unstuck are you?</h1>
-					<p>Our system notified us that your Help Desk Request ended: { formData.timeclosed }</p>
+					<h1 id='header'>Hi, { formData.author }</h1>
+          <h1 id='header2'>How unstuck are you?</h1>
+					<p id='notification'>Our system notified us that your Help Desk Request ended: { formData.timeclosed }</p>
 					<RatingContainer tags={ formData.tags } callbackParent={ this.onRatingChange } />
-					<h3>Any shout outs?</h3>
+					<h3 id='shoutout'>Any shout outs?</h3>
 					<form method="post" onSubmit={ this.handleSubmit }>
-						<textarea ref="shoutout" className="form-control" rows="3" id="shoutout" placeholder="Additional feedback is appreciated..."></textarea>
-            <input className="btn btn-default" type="submit" value="Submit" />
+						<textarea ref="shoutout" id='shoutout-text' className="form-control" rows="3" placeholder="Additional feedback is appreciated..."></textarea>
+            <input className="btn btn-default" id='submit' type="submit" value="Submit" />
 					</form>
 				</div>
 			);
@@ -116,6 +116,6 @@
 
   ReactDOM.render(
   	<SurveyForm formData={ data } />,
-  	document.getElementById('react-mountpoint')
+  	document.getElementById('feedback-survey')
   );
 })();

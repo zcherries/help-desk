@@ -18,7 +18,8 @@
     render: function() {
       return (
         <div className="help">
-          <textarea ref="content" className="request-text form-control" rows="3" id="content" placeholder="Input your question here"></textarea>
+        <div className='help-text'>Help</div>
+          <textarea ref="content" className="request-text form-control" rows="3" id="content" placeholder="What do you need help on?"></textarea>
           <SubmitTags /><br/>
           <button id='request-submit' onClick={this.sendRequest}>Submit Help Request</button>
         </div>
@@ -50,8 +51,8 @@
       return (
       <div className='submit-tags'>
       <form className="submit-tag" onSubmit={this.handleSubmit} >
-        <input type="text" id='input' autoComplete="on" placeholder="Enter tags" ref="tag"/>
-        <input type="submit" value="Add Tags" />
+      <input type="text" id='input' autoComplete="on" placeholder="Enter tags" ref="tag"/>
+        <input type="submit" id='input-submit' value="Add Tags" />
       </form> 
       <RenderTags data={this.state.inputData} />
       </div>
