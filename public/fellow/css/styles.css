@@ -7,12 +7,18 @@
 	font-family:BebasNeue;
 	src:url('../../student/css/BebasNeue.otf');
 }
-
+#bug-compose {
+	margin-left: 700px;
+	margin-top: 550px;
+	position:absolute;
+}
 .form-control {
 	width:350px;
 }
 
 #submit {
+	margin-top:10px;
+	margin-left:300px;
 	border:none;
 	color:white;
 	background-color:#9eb4b1;

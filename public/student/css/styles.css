@@ -139,7 +139,7 @@ body {
 	background-color:#9eb4b1;
 	color:white;
 	border:none;
-	margin-left:92px;
+	margin-left:205px;
 }
 
 #input-submit {
@@ -160,7 +160,7 @@ body {
 	/*font-family:Gotham-Book;*/
 	margin-top: 5px;
 	margin-right: 5px;
-	width: 170px;
+	width: 285px;
 	margin-bottom:10px;
 	border-bottom-color:#cccccc;
 	border-left: none;
@@ -190,5 +190,6 @@ body {
 	font-family:BebasNeue;
 	color:#748583;
 	font-size: 75px;
-	padding-left:135px;
+	/*padding-left:135px;*/
+	text-align:right;
 }
