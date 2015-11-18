@@ -1,18 +1,14 @@
 var webpack = require('webpack');
 
 module.exports = {
-	entry: {
-		Student: './components/students/main.js',
-		Fellow: './components/fellows/main.js'
-	},
+  entry: './components/bug-log.js',
 	output: {
-		path: 'build'
-		filename: '[name].js'
+		path: 'build',
+		filename: 'bundle.js'
 	},
 	module: {
 		loaders: [
-			{ test: /\.js$/, loader: 'babel-loader' },
-			{ test: /\.(png|jpg|jpeg)$/, loader: 'url-loader?limit8192' }
+			{ test: /\.js$/, loader: 'babel-loader' }
 		]
 	},
 	resolve: {
