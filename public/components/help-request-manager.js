@@ -32,26 +32,26 @@
 			switch (this.props.status) {
 				case 'outstanding':
 					return (
-						<div className="db-entry" onClick={ this.handleClick }>
+						<div className="db-entry" id='needs-help' onClick={ this.handleClick }>
 							<p>{ obj.author } needs help with: </p>
-							<p>{ tags }</p>
+							<p>tags: { tags }</p>
 							<p>"{ obj.content }"</p>
 							<p>{ obj.timesubmitted }</p>
 						</div>
 					);
 				case 'in-progress':
 					return (
-						<div className="db-entry" onClick={ this.handleClick }>
+						<div className="db-entry" id='is-helping' onClick={ this.handleClick }>
 							<p>{ obj.assignedFellow } is helping { obj.author }</p>
-							<p>{ tags }</p>
+							<p>tags: { tags }</p>
 							<p>{ obj.timesubmitted }</p>
 						</div>
 					);
 				case 'closed':
 					return (
-						<div className="db-entry" onClick={ this.handleClick }>
+						<div className="db-entry" id='helped' onClick={ this.handleClick }>
 							<p>{ obj.assignedFellow } helped { obj.author } with:</p>
-							<p>{ tags }</p>
+							<p>tags: { tags }</p>
 							<p>{ obj.timesubmitted }</p>
 						</div>
 					);
