@@ -12,6 +12,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+
+    <script>
+      socket = io();
+      console.log('working...');
+      socket.on('fellow-closed', function(hrObj) {
+        alert('Your Help Request was recently closed. Please fill out the feedback survey');
+        var redirectURL = 'http://localhost:8000/student/feedback-survey.html?' + hrObj._id;
+        window.location.replace(redirectURL);
+        // serve the feedback survey
+      });
+    </script>
+
 </head>
 <body>
 

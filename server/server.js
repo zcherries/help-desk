@@ -38,9 +38,6 @@ io.on('connection', function (socket) {
   	console.log(JSON.stringify(hrObj));
   	closeHelpRequest(hrObj);
   });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
 });
 /* -- END socket IO -- */
 
@@ -51,14 +48,14 @@ mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-	// connect to a collection
+	// connect to collections
 	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
 	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
 });
 /* -- END mongo setup -- */
 
 
-// helper functions
+// Help Request helper functions
 var acceptHelpRequest = function(hrObj) {
 	var conditions = { _id: hrObj._id },
 			update = { $set: { accepted: true, assignedFellow: hrObj.name } },
@@ -79,12 +76,12 @@ var closeHelpRequest = function(hrObj) {
 			options = { multi: false };
 
 	helprequests.update(conditions, update, options, callback);
-	sendFeedbackSurvey(hrObj);
 
 	function callback (err, numAffected) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
-		socketRef.emit('fellow-closed');
+		// send feedback survey
+		socketRef.broadcast.emit('fellow-closed', hrObj);
 	}
 };
 var addFeedbackSurvey = function(hrObj) {
@@ -134,6 +131,19 @@ app.get('/data', function(req, res, next) {
 		return;
 	});
 });
+// retrieve Help Request
+app.get('/data/*', function(req, res, next) {
+	// grab unique db entry ID
+	var id = path.parse(req.path).base;
+	console.log('id: ' + id);
+	helprequests.findById(id)
+		.then(function(found) {
+			if (!found) {  
+				return res.send('No entry found for _id: ' + id);
+			}
+			return res.send(found);
+		});
+});
 // delete Help Requests
 app.post('/data/delete', function(req, res, next) {
 	console.log('req.body: ' + JSON.stringify(req.body));
@@ -177,20 +187,7 @@ app.post('/data/bugs/delete', function(req, res, next) {
 	});
 });
 
-// app.get('/survey/*', function(req, res, next) {
-// 	console.log(req.path);
-// 	// grab unique db entry ID
-// 	console.log('152');
-// 	var id = path.parse(req.path).base;
-// 	console.log('id: ' + id);
-// 	helprequests.findById(id)
-// 		.then(function(found) {
-// 			if (!found) {
-// 				return res.send('No entry found for _id: ' + id);
-// 			}
-// 			return res.send(found);
-// 		});
-// });
+
 
 // static files
 app.use(express.static('./public'));
