@@ -101,7 +101,7 @@
         <form className="submit-tag" onSubmit={this.handleSubmit} >
           <input type="text" id='input' autoComplete="off" placeholder="Enter tags" ref="tag"/>
           <input type="submit" id='input-submit' value="Add Tags" />
-        </form> 
+        </form>
         <TagContainer data={ this.state.inputTags } parentRemoveTag={ this.parentRemoveTag } />
       </div>
       );

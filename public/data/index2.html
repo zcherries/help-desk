@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Mongo DBMS</title>
+    <title>User DBMS</title>
   </head>
   <body>
     <div id="react-container">
@@ -31,7 +31,7 @@
 	    var DatabaseEntry = React.createClass({
 	    	handleClick: function() {
 	    		var data = { id: this.props.obj._id };
-	    		$.post('http://localhost:8000/data/delete', data, function(data) {
+	    		$.post('http://localhost:8000/data/users/delete', data, function(data) {
 		    		console.log('posted!');
 		    		this.props.parentClickHandler(data);
 		    	}.bind(this));
@@ -100,7 +100,7 @@
 	    });
 
 	    ReactDOM.render(
-	    	<DatabaseViewer source='http://localhost:8000/data' />,
+	    	<DatabaseViewer source='http://localhost:8000/data/users' />,
 	    	document.getElementById('react-container')
 	    );
 

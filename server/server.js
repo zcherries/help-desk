@@ -9,6 +9,8 @@ var HelpRequest = dbHelpers.HelpRequest;
 var helpReqSchema = dbHelpers.helpReqSchema;
 var BugAlert = dbHelpers.BugAlert;
 var bugAlertSchema = dbHelpers.bugAlertSchema;
+var User = dbHelpers.User;
+var userSchema = dbHelpers.userSchema;
 
 var app = express();
 var server = http.createServer(app);
@@ -43,14 +45,16 @@ io.on('connection', function (socket) {
 
 
 /* -- BEGIN mongo setup --*/
-var helprequests, bugalerts; // Collection names
+var helprequests, bugalerts, users; // Collection names
 mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
 	// connect to collections
+	console.log('inside of mongo initialization...');
 	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
 	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
+	users = mongoose.model('User', userSchema, 'users');
 });
 /* -- END mongo setup -- */
 
@@ -131,32 +135,34 @@ app.get('/data', function(req, res, next) {
 		return;
 	});
 });
-// retrieve Help Request
+
+// retrieve Help Request by ID
 app.get('/data/id=*', function(req, res, next) {
 	console.log('here');
 	// grab unique db entry ID
 	var id = path.parse(req.path).base.slice(3);
 	helprequests.findById(id)
 		.then(function(found) {
-			if (!found) {  
+			if (!found) {
 				return res.send('No entry found for _id: ' + id);
 			}
 			return res.send(found);
 		});
 });
+
 // delete Help Requests
 app.post('/data/delete', function(req, res, next) {
 	console.log('req.body: ' + JSON.stringify(req.body));
 	var id = req.body.id;
 	helprequests.findById(id).remove(function(err, removed) {
-		socketRef.emit('entry-deleted', removed);
+		// socketRef.emit('entry-deleted', removed);
 		console.log('successfully removed: ' + removed);
 		res.send(req.body);
 	});
 });
 
 // retrieve BugAlerts
-app.get('/data/bugs', function(req, res, next) {
+app.get('/data/bugalerts', function(req, res, next) {
 	console.log('fetching from bugalerts Collection...');
 	var html = '';
 	bugalerts.find(function(err, objects) {
@@ -164,8 +170,9 @@ app.get('/data/bugs', function(req, res, next) {
 		return;
 	});
 });
+
 // add new Bug Alert
-app.post('/data/bugs', function(req, res, next) {
+app.post('/data/bugalerts', function(req, res, next) {
 	console.log('req.body: ' + JSON.stringify(req.body));
 	var newBugAlert = new BugAlert(req.body);
 	newBugAlert.save(function(err, newBugAlert) {
@@ -187,6 +194,37 @@ app.post('/data/bugs/delete', function(req, res, next) {
 	});
 });
 
+
+// app.get('/data/users', function(req, res, next) {
+// 	users.find(function(err, userEntries) {
+// 		return res.send(userEntries);
+// 	});
+// });
+
+// retrieve users
+app.get('/data/users', function(req, res, next) {
+	console.log('fetching from users Collection...');
+	var html = '';
+	users.find(function(err, userEntries) {
+		res.send(userEntries);
+		return;
+	});
+});
+
+
+// add new users?
+
+
+// delete users
+app.post('/data/users/delete', function(req, res, next) {
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var id = req.body.id;
+	users.findById(id).remove(function(err, removed) {
+		// socketRef.emit('entry-deleted', removed);
+		console.log('successfully removed: ' + removed);
+		res.send(req.body);
+	});
+});
 
 
 // static files
