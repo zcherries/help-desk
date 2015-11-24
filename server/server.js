@@ -2,6 +2,7 @@ var serverHelpers = require('./server-helpers.js');
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var url = require('url');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var dbHelpers = require('./db/db-helpers.js');
@@ -9,6 +10,8 @@ var HelpRequest = dbHelpers.HelpRequest;
 var helpReqSchema = dbHelpers.helpReqSchema;
 var BugAlert = dbHelpers.BugAlert;
 var bugAlertSchema = dbHelpers.bugAlertSchema;
+
+var townhallTopicSchema = dbHelpers.townhallTopicSchema;
 
 var app = express();
 var server = http.createServer(app);
@@ -43,14 +46,15 @@ io.on('connection', function (socket) {
 
 
 /* -- BEGIN mongo setup --*/
-var helprequests, bugalerts; // Collection names
-mongoose.connect('mongodb://localhost/test');
+var helprequests, bugalerts, townhallTopics; // Collection names
+mongoose.connect('mongodb://localhost/helpdesk');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
 	// connect to collections
 	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
 	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
+	townhallTopics = mongoose.model('TownhallTopic', townhallTopicSchema)
 });
 /* -- END mongo setup -- */
 
@@ -138,7 +142,7 @@ app.get('/data/id=*', function(req, res, next) {
 	var id = path.parse(req.path).base.slice(3);
 	helprequests.findById(id)
 		.then(function(found) {
-			if (!found) {  
+			if (!found) {
 				return res.send('No entry found for _id: ' + id);
 			}
 			return res.send(found);
@@ -187,7 +191,61 @@ app.post('/data/bugs/delete', function(req, res, next) {
 	});
 });
 
+//townhall topics handlers
+app.get('/townhall/topics', function(req, res, next) {
+	console.log('In app.get townhall topics');
+	townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+		console.log(topics[0].questions);
+		res.send({status: 200, data: topics});
+	});
+});
 
+app.post('/townhall/topics', function(req, res, next) {
+	console.log('In app.post townhall topics');
+	console.log("Url: " + req.url);
+	console.log("Resources: " + req.body.resources);
+	var query = url.parse(req.url).search;
+	console.log("Query: " + query);
+	if (query && query.length > 1) {
+		var id = query.slice(9);
+		console.log("Topic ID: " + id)
+		townhallTopics.findOne({_id: id}, function(err, topic) {
+			if (err) console.error("Townhall topic question post error: ", err);
+			else {
+				if (topic) {
+					topic.questions.push(req.body);
+					topic.save(function(err) {
+						if (err) { throw err; }
+						else { res.send({status: 201, data: topic.questions}); }
+					});
+				} else {
+					res.status(400).send({status: 400, data: null, message: "Topic not found"});
+				}
+			}
+		});
+	} else {
+		townhallTopics.findOne({title: req.body.title}, function(err, match){
+			if (err) console.error("Townhall topic post error: ", err);
+			else {
+				if (!match) {
+					townhallTopics.create(req.body).then(function(){
+						townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+							res.send({status: 201, data: topics});
+						});
+					});
+				} else {
+					res.status(400).send({status: 400, data: null, message: "Topic not found"});
+				}
+			}
+		});
+	}
+});
+
+//app.get('/townhall/topics/', function(req, res, next) {
+//});
+
+//app.post('/townhall/topics', function(req, res, next) {
+//})
 
 // static files
 app.use(express.static('./public'));
