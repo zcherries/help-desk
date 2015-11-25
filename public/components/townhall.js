@@ -170,7 +170,6 @@ var Question = React.createClass({
   updateResourceList: function(e) {
     //var resources = (React.findDOMNode(this.refs.newText).value).split(/\r\n|\r|\n/g);
     var resources = (e.target.value).split(/\r\n|\r|\n/g);
-    console.log(resources);
     if (resources.length) {
       this.props.updateResources({question_id: this.props.q_id, resources: resources});
     }
@@ -179,15 +178,13 @@ var Question = React.createClass({
   render: function() {
     return (
       <div className="question">
-        <span className="title">{this.props.children.title}</span>
-        <span>
-          <span className="votes">Votes: {this.props.children.votes}</span>
-          <button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.plusOne} />
-          <button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.minusOne} />
-          <button onClick={this.updateResourceList} className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" />
-          <textarea ref="newText"
-            defaultValue={this.props.children.resources} onChange={this.updateResourceList}></textarea>
+        <span className="question_title">{this.props.children.title}</span>
+        <span className="votes">Votes: {this.props.children.votes}
+          &nbsp;&nbsp;<button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.plusOne} />
+          &nbsp;<button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.minusOne} />
         </span>
+        <textarea className="form-control" ref="newText"
+          defaultValue={this.props.children.resources} onBlur={this.updateResourceList}></textarea>
       </div>
     )
   }
@@ -215,10 +212,10 @@ var TopicForm = React.createClass({
 
   render: function() {
     return (
-        <form onSubmit={this.submitHandler}>
-          <input type="text" placeholder="Add a topic" value={this.state.topic} onChange={this.handleTextChange}/>
-          <input type="submit" value="Post Topic" />
-        </form>
+      <form onSubmit={this.submitHandler}>
+        <input type="text" placeholder="Add a topic" value={this.state.topic} onChange={this.handleTextChange}/>
+        <input type="submit" value="Post Topic" />
+      </form>
     )
   }
 });
