@@ -195,20 +195,15 @@ app.post('/data/bugs/delete', function(req, res, next) {
 app.get('/townhall/topics', function(req, res, next) {
 	console.log('In app.get townhall topics');
 	townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
-		console.log(topics[0].questions);
 		res.send({status: 200, data: topics});
 	});
 });
 
 app.post('/townhall/topics', function(req, res, next) {
 	console.log('In app.post townhall topics');
-	console.log("Url: " + req.url);
-	console.log("Resources: " + req.body.resources);
 	var query = url.parse(req.url).search;
-	console.log("Query: " + query);
 	if (query && query.length > 1) {
 		var id = query.slice(9);
-		console.log("Topic ID: " + id)
 		townhallTopics.findOne({_id: id}, function(err, topic) {
 			if (err) console.error("Townhall topic question post error: ", err);
 			else {
@@ -244,8 +239,27 @@ app.post('/townhall/topics', function(req, res, next) {
 //app.get('/townhall/topics/', function(req, res, next) {
 //});
 
-//app.post('/townhall/topics', function(req, res, next) {
-//})
+app.post('/townhall/topics/question/*', function(req, res, next) {
+	console.log("About to edit question")
+	townhallTopics.findOne({_id: req.body.topic_id}, function(err, topic) {
+		if (err) { console.error("Finding topic Error: ", err); }
+
+		var question = topic.questions.id(req.body.question_id);
+		console.log(req.body.resources);
+		if (req.body.vote) {
+			question.votes = req.body.vote;
+		} else if (req.body.resources) {
+			question.resources = req.body.resources;
+		}
+
+		topic.save(function(err) {
+			if (err) { throw err; }
+			else {
+				console.log("Sending response")
+				res.send({status: 201, data: topic.questions}); }
+		});
+	});
+})
 
 // static files
 app.use(express.static('./public'));

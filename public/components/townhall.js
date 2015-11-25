@@ -52,7 +52,10 @@ var Townhall = React.createClass({
     });
     return (
       <div className="townhall">
-        <TopicForm postTopic={this.postTopic} />
+        <h1>Townhall</h1>
+        <div className="frm">
+          <TopicForm postTopic={this.postTopic} />
+        </div>
         <div className="topics">
           {topics}
         </div>
@@ -68,18 +71,23 @@ var Topic = React.createClass({
   },
 
   listQuestions: function() {
+    //var self = this;
     if (this.state.questions.length) {
       return this.state.questions.map(function(question, idx) {
         return (
-          <Question key={idx} questionId={question._id} content={question} />
+          <Question key={idx} q_id={question._id}
+            updateVote={this.updateVote}
+            updateResources={this.updateResources}>{question}</Question>
         )
-      });
+      }.bind(this));
     }
     return this.props.questions.map(function(question, idx) {
       return (
-        <Question key={idx} questionId={question._id} content={question} />
+        <Question key={idx} q_id={question._id}
+          updateVote={this.updateVote}
+          updateResources={this.updateResources}>{question}</Question>
       )
-    });
+    }.bind(this));
   },
 
   postQuestion: function(question) {
@@ -97,13 +105,43 @@ var Topic = React.createClass({
     });
   },
 
+  updateVote: function(vote) {
+    vote.topic_id = this.props.topicId;
+    $.ajax({
+      type: 'POST',
+      url: 'topics/question/vote',
+      data: vote,
+      success: function(response) {
+        this.setState({ questions: response.data });
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.log("Error posting to: " + this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+
+  updateResources: function(resources) {
+    resources.topic_id = this.props.topicId;
+    $.ajax({
+      type: 'POST',
+      url: 'topics/question/resources',
+      data: resources,
+      success: function(response) {
+        this.setState({ questions: response.data });
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.log("Error posting to: " + this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+
   render: function() {
     var topic_questions = this.listQuestions();
     return (
       <div className="topic">
-        <p>{this.props.text}</p>
+        <h3>{this.props.text}</h3>
+        <QuestionForm postQuestion={this.postQuestion} />
         {topic_questions}
-        <div><QuestionForm postQuestion={this.postQuestion} /></div>
       </div>
     )
   }
@@ -111,13 +149,46 @@ var Topic = React.createClass({
 
 //Question Component
 var Question = React.createClass({
+  getInitialState: function() {
+    return {
+
+    }
+  },
+
+  plusOne: function() {
+    var count = this.props.children.votes + 1
+    this.props.updateVote({question_id: this.props.q_id, vote: count});
+  },
+
+  minusOne: function() {
+    var count = this.props.children.votes - 1
+    if (count >= 0) {
+      this.props.updateVote({question_id: this.props.q_id, vote: count});
+    }
+  },
+
+  updateResourceList: function(e) {
+    //var resources = (React.findDOMNode(this.refs.newText).value).split(/\r\n|\r|\n/g);
+    var resources = (e.target.value).split(/\r\n|\r|\n/g);
+    console.log(resources);
+    if (resources.length) {
+      this.props.updateResources({question_id: this.props.q_id, resources: resources});
+    }
+  },
+
   render: function() {
     return (
-      <p>
-        <span>{this.props.content.title}</span>
-        <span>{this.props.content.votes}</span>
-        <span>{this.props.content.resources}</span>
-      </p>
+      <div className="question">
+        <span className="title">{this.props.children.title}</span>
+        <span>
+          <span className="votes">Votes: {this.props.children.votes}</span>
+          <button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.plusOne} />
+          <button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.minusOne} />
+          <button onClick={this.updateResourceList} className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" />
+          <textarea ref="newText"
+            defaultValue={this.props.children.resources} onChange={this.updateResourceList}></textarea>
+        </span>
+      </div>
     )
   }
 });
@@ -130,7 +201,6 @@ var TopicForm = React.createClass({
 
   handleTextChange: function(e) {
     this.setState({topic: e.target.value});
-    console.log(e.target.value);
   },
 
   submitHandler: function(e) {
@@ -145,10 +215,10 @@ var TopicForm = React.createClass({
 
   render: function() {
     return (
-      <form onSubmit={this.submitHandler}>
-        <input type="text" placeholder="Add a topic" value={this.state.topic} onChange={this.handleTextChange}/>
-        <input type="submit" value="Post Topic" />
-      </form>
+        <form onSubmit={this.submitHandler}>
+          <input type="text" placeholder="Add a topic" value={this.state.topic} onChange={this.handleTextChange}/>
+          <input type="submit" value="Post Topic" />
+        </form>
     )
   }
 });
@@ -174,10 +244,12 @@ var QuestionForm = React.createClass({
 
   render: function() {
     return (
+      <div className="question_form">
       <form onSubmit={this.submitHandler}>
         <input type="text" placeholder="Post a question" value={this.state.question} onChange={this.handleTextChange} />
         <input type="submit" value="Post Question" />
       </form>
+      </div>
     )
   }
 });
