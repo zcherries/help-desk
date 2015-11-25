@@ -85,9 +85,10 @@ var Topic = React.createClass({
 
   postQuestion: function(question) {
     //console.log(this.props.url + "?topicId=" + this.props.topicId)
+    question.topic_id = this.props.topicId;
     $.ajax({
       type: 'POST',
-      url: 'topics?topicId=' + this.props.topicId,
+      url: 'topics/topic/question',
       data: question,
       success: function(response) {
         this.setState({ questions: response.data });
@@ -102,7 +103,7 @@ var Topic = React.createClass({
     vote.topic_id = this.props.topicId;
     $.ajax({
       type: 'POST',
-      url: 'topics/question/vote',
+      url: 'topics/topic/question/vote',
       data: vote,
       success: function(response) {
         this.setState({ questions: response.data });
@@ -117,7 +118,7 @@ var Topic = React.createClass({
     resources.topic_id = this.props.topicId;
     $.ajax({
       type: 'POST',
-      url: 'topics/question/resources',
+      url: 'topics/topic/question/resources',
       data: resources,
       success: function(response) {
         this.setState({ questions: response.data });
@@ -157,11 +158,6 @@ var Question = React.createClass({
   updateResourceList: function(e) {
     //var resources = (React.findDOMNode(this.refs.newText).value).split(/\r\n|\r|\n/g);
     var resources = (e.target.value).split(/\r\n|\r|\n/g);
-    console.log(resources)
-    // if (!this.props.children.resources.length && resources.length)
-    //     || (this.props.children.resources.length && !resources.length) {
-    //     this.props.updateResources({question_id: this.props.q_id, resources: resources});
-    // }
     for (var i = 0; i < resources.length; i++) {
       if (resources[i] !== this.props.children.resources[i]) {
         this.props.updateResources({question_id: this.props.q_id, resources: resources});
@@ -208,7 +204,7 @@ var TopicForm = React.createClass({
     return (
       <div className="topic_form">
         <form onSubmit={this.submitHandler}>
-          <input type="text" placeholder="Add a topic" value={this.state.topic} onChange={this.handleTextChange}/>
+          <input type="text" value={this.state.topic} onChange={this.handleTextChange}/>
           <input type="submit" value="Post Topic" />
         </form>
       </div>
@@ -239,7 +235,7 @@ var QuestionForm = React.createClass({
     return (
       <div className="question_form">
         <form onSubmit={this.submitHandler}>
-          <input type="text" placeholder="Post a question" value={this.state.question} onChange={this.handleTextChange} />
+          <input type="text" value={this.state.question} onChange={this.handleTextChange} />
           <input type="submit" value="Post Question" />
         </form>
       </div>
