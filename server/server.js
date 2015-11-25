@@ -236,16 +236,12 @@ app.post('/townhall/topics', function(req, res, next) {
 	}
 });
 
-//app.get('/townhall/topics/', function(req, res, next) {
-//});
-
 app.post('/townhall/topics/question/*', function(req, res, next) {
 	console.log("About to edit question")
 	townhallTopics.findOne({_id: req.body.topic_id}, function(err, topic) {
 		if (err) { console.error("Finding topic Error: ", err); }
 
 		var question = topic.questions.id(req.body.question_id);
-		console.log(req.body.resources);
 		if (req.body.vote) {
 			question.votes = req.body.vote;
 		} else if (req.body.resources) {
@@ -255,7 +251,6 @@ app.post('/townhall/topics/question/*', function(req, res, next) {
 		topic.save(function(err) {
 			if (err) { throw err; }
 			else {
-				console.log("Sending response")
 				res.send({status: 201, data: topic.questions}); }
 		});
 	});

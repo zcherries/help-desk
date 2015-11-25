@@ -34,10 +34,10 @@ var NavUser = React.createClass({
 
 
 var userData = [
-  {id: 1, 
-    username: 'default-user', 
-    slack: '#', 
-    github: '#', 
+  {id: 1,
+    username: 'default-user',
+    slack: '#',
+    github: '#',
     urls: [{text:'My Cohort',link:'#'},{text:'slackIt',link:'#'},{text:'gitHubIt',link:'#'},{text:'reactIt',link:'#'},{text:'nodeIt',link:'3'}]
   },
 ];
@@ -47,6 +47,7 @@ var orgData = [
   {id: 2, title: 'Repo List', link: '#'},
   {id: 3, title: 'Wiki', link: '#'},
   {id: 4, title: 'Help Desk', link: '#'},
+  {id: 5, title: 'Townhall', link: '/townhall'}
 ];
 
 //Component for MKS Org links
@@ -56,16 +57,16 @@ var NavOrg = React.createClass({
   },
   render: function() {
     var orgListItems = this.props.data.map(function(item) {
-      return <span key={item.id}><a href="{item.link}">{item.title}</a></span>;
+      return <span key={item.id}><a href={item.link}>{item.title}</a></span>;
     });
     return (
       <div>
         <div className='org-list'>{orgListItems}</div>
       </div>
-    ) 
+    )
   }
 });
-    
+
 //component to render multiple components inside navbar
 var NavContainer = React.createClass({
   render: function() {
@@ -79,7 +80,7 @@ var NavContainer = React.createClass({
               <li>
                 <NavOrg data={orgData} />
               </li>
-      
+
               <li>
                 <NavUser data={userData} />
               </li>
@@ -108,4 +109,3 @@ ReactDOM.render(<NavContainer />, document.getElementById('navbar'));
 //           <div style={{display: 'inline-block'}}>
 //           </div>
 //         </div>
-  

@@ -1,11 +1,6 @@
-//Topic
-//Question
-//Votes
-//Useful Links
-
-//Topic is parent to Questions
-//Each question has a vote count
-//Each question has useful Links
+//Towhnall is a parent component to the Topic and Topic form components
+//Topic is a parent component to Questions and Question Form components
+//Each question has a vote count and listing of resources
 
 //Townhall component
 var Townhall = React.createClass({
@@ -53,9 +48,7 @@ var Townhall = React.createClass({
     return (
       <div className="townhall">
         <h1>Townhall</h1>
-        <div className="frm">
-          <TopicForm postTopic={this.postTopic} />
-        </div>
+        <TopicForm postTopic={this.postTopic} />
         <div className="topics">
           {topics}
         </div>
@@ -100,7 +93,7 @@ var Topic = React.createClass({
         this.setState({ questions: response.data });
       }.bind(this),
       error: function(xhr, status, err) {
-        console.log("Error posting to: " + this.props.url, status, err.toString());
+        console.log("Error posting to: " + xhr, status, err.toString());
       }.bind(this)
     });
   },
@@ -115,7 +108,7 @@ var Topic = React.createClass({
         this.setState({ questions: response.data });
       }.bind(this),
       error: function(xhr, status, err) {
-        console.log("Error posting to: " + this.props.url, status, err.toString());
+        console.log("Error posting to: " + xhr, status, err.toString());
       }.bind(this)
     });
   },
@@ -130,7 +123,7 @@ var Topic = React.createClass({
         this.setState({ questions: response.data });
       }.bind(this),
       error: function(xhr, status, err) {
-        console.log("Error posting to: " + this.props.url, status, err.toString());
+        console.log("Error posting to: " + xhr, status, err.toString());
       }.bind(this)
     });
   },
@@ -149,18 +142,12 @@ var Topic = React.createClass({
 
 //Question Component
 var Question = React.createClass({
-  getInitialState: function() {
-    return {
-
-    }
-  },
-
-  plusOne: function() {
+  upVote: function() {
     var count = this.props.children.votes + 1
     this.props.updateVote({question_id: this.props.q_id, vote: count});
   },
 
-  minusOne: function() {
+  downVote: function() {
     var count = this.props.children.votes - 1
     if (count >= 0) {
       this.props.updateVote({question_id: this.props.q_id, vote: count});
@@ -170,8 +157,15 @@ var Question = React.createClass({
   updateResourceList: function(e) {
     //var resources = (React.findDOMNode(this.refs.newText).value).split(/\r\n|\r|\n/g);
     var resources = (e.target.value).split(/\r\n|\r|\n/g);
-    if (resources.length) {
-      this.props.updateResources({question_id: this.props.q_id, resources: resources});
+    console.log(resources)
+    // if (!this.props.children.resources.length && resources.length)
+    //     || (this.props.children.resources.length && !resources.length) {
+    //     this.props.updateResources({question_id: this.props.q_id, resources: resources});
+    // }
+    for (var i = 0; i < resources.length; i++) {
+      if (resources[i] !== this.props.children.resources[i]) {
+        this.props.updateResources({question_id: this.props.q_id, resources: resources});
+      }
     }
   },
 
@@ -180,8 +174,8 @@ var Question = React.createClass({
       <div className="question">
         <span className="question_title">{this.props.children.title}</span>
         <span className="votes">Votes: {this.props.children.votes}
-          &nbsp;&nbsp;<button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.plusOne} />
-          &nbsp;<button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.minusOne} />
+          &nbsp;&nbsp;<button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.upVote} />
+          &nbsp;<button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.downVote} />
         </span>
         <textarea className="form-control" ref="newText"
           defaultValue={this.props.children.resources} onBlur={this.updateResourceList}></textarea>
@@ -212,10 +206,12 @@ var TopicForm = React.createClass({
 
   render: function() {
     return (
-      <form onSubmit={this.submitHandler}>
-        <input type="text" placeholder="Add a topic" value={this.state.topic} onChange={this.handleTextChange}/>
-        <input type="submit" value="Post Topic" />
-      </form>
+      <div className="topic_form">
+        <form onSubmit={this.submitHandler}>
+          <input type="text" placeholder="Add a topic" value={this.state.topic} onChange={this.handleTextChange}/>
+          <input type="submit" value="Post Topic" />
+        </form>
+      </div>
     )
   }
 });
@@ -242,10 +238,10 @@ var QuestionForm = React.createClass({
   render: function() {
     return (
       <div className="question_form">
-      <form onSubmit={this.submitHandler}>
-        <input type="text" placeholder="Post a question" value={this.state.question} onChange={this.handleTextChange} />
-        <input type="submit" value="Post Question" />
-      </form>
+        <form onSubmit={this.submitHandler}>
+          <input type="text" placeholder="Post a question" value={this.state.question} onChange={this.handleTextChange} />
+          <input type="submit" value="Post Question" />
+        </form>
       </div>
     )
   }

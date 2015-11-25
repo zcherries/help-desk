@@ -1,54 +1,6 @@
-/* http://meyerweb.com/eric/tools/css/reset/
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-  display: block;
-}
-body {
-  line-height: 1;
-}
-ol, ul {
-  list-style: none;
-}
-blockquote, q {
-  quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
 /* - My styles - */
-.container {
- font-family: Helvetica
+body {
+  font-family: BebasNeue;
 }
 .townhall {
   width: 70%;
@@ -56,21 +8,32 @@ table {
   border: 1px solid #ccc;
 }
 
-.townhall h1, .townhall .frm {
+.townhall h1 {
+  font-size: 48px;
   text-align: center
 }
 
-.townhall .frm input[type='text'] {
-  width: 20%;
-}
 .topic {
   width: 100%;
   border-top: 1px solid #ccc;
   margin-bottom: 15px;
 }
+
 .topic h3 {
+  font-size: 32px;
   text-align: center;
-  /*text-decoration: underline;*/
+}
+
+.topic_form input, .question_form input, textarea {
+  font-family: Helvetica;
+}
+
+.topic_form {
+  text-align: center;
+}
+
+.topic_form input[type='text'] {
+  width: 20%;
 }
 
 .question {
@@ -90,15 +53,15 @@ table {
 }
 
 span.question_title {
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 24px;
+  /*font-weight: 500;*/
   color: teal;
 }
 
 span.votes {
   display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 18px;
+  /*font-weight: 700;*/
   color: teal;
   float: right;
   clear: right;
