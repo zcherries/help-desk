@@ -47,7 +47,8 @@ var orgData = [
   {id: 2, title: 'Repo List', link: '#'},
   {id: 3, title: 'Wiki', link: '#'},
   {id: 4, title: 'Help Desk', link: '#'},
-  {id: 5, title: 'Townhall', link: '/townhall'}
+  {id: 5, title: 'Calendar', link: '/calendar'},
+  {id: 6, title: 'Townhall', link: '/townhall'}
 ];
 
 //Component for MKS Org links

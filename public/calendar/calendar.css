@@ -1,0 +1,53 @@
+#output {
+  width: 70%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.week {
+  display:flex;
+  flex-direction: row;
+}
+
+.dates {
+  display:flex;
+  flex-direction: row;
+}
+
+.dates h3 {
+  display: flex;
+  flex: 1;
+  /*align-content: stretch;*/
+}
+
+.schedule {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  flex: 1;
+  /*background-color: #f7f7f7;*/
+  /*border: solid 1px #000;*/
+}
+
+.schedule div {
+  height: 70px;
+  /*border-bottom: 1px solid #000;*/
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  flex: 1;
+  background-color: #f7f7f7;
+  border: solid 1px #000;
+}
+
+.day h1 {
+  padding: 10px 0px;
+  border-bottom: 1px solid #000;
+}
+.hour {
+  height: 70px;
+  border-bottom: 1px solid #000;
+}
