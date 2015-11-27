@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="calendar.css" />
+
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script src="https://fb.me/react-0.14.2.js"></script>
     <script src="https://fb.me/react-dom-0.14.2.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.28.1/react-bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 
-    <link rel="stylesheet" href="calendar.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <!-- <script data-main="scripts/main" src="require.js"></script> -->
   </head>
   <body>
     <div id="authorize-div" style="display: none">
       <span>Authorize access to Google Calendar API</span>
       <!--Button for the user to click to initiate auth sequence -->
-      <button id="authorize-button" onclick="handleAuthClick(event)">
-        Authorize
-      </button>
+      <button id="authorize-button" onclick="handleAuthClick(event)">Authorize</button>
     </div>
     <!-- <div id="calendar"></div> -->
     <pre id="output"></pre>
 
-    <script type="text/babel" src="calendar.js"></script>
+    <script src="calendar.js"></script>
     <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
-    <!-- <script type="text/babel" src="weekly_view.js"></script> -->
-
+    <script type="text/babel" src="weekly_view.js"></script>
   </body>
 </html>

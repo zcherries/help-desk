@@ -1,79 +1,24 @@
-//build current week dates
-var currentWeek = [""];
-for (var i = 0; i < 7; i++) {
-  var date = moment().startOf('isoweek').add(i, 'days').toISOString();
-  currentWeek.push(date);
-  // console.log(moment(date).format("MM/DD/YYYY"));
-}
-
-var operatingHours = [
-  "09:00:00", "10:00:00", '11:00:00', '12:00:00', '01:00:00', '01:00:00',
-  '02:00:00', '03:00:00', '04:00:00', '05:00:00', '06:00:00', '07:00:00',
-  '08:00:00', '09:00:00'
-];
-
-var formatDate = function(isoDate) {
-  if (!isoDate) return "";
-  return moment(isoDate).format("MM/DD/YYYY");
-};
-
-var Week = React.createClass({
-  render: function() {
-    console.log("Calendar: ", this.props.calendarEvent)
-    return (
-      <div>
-        <div className="dates">
-          {currentWeek.map(function(date, idx) {
-            return <h3 key={idx}>{formatDate(date)}</h3>
-          })}
-        </div>
-
-        <div className="week">
-          <div className="schedule">
-            {operatingHours.map(function(hr, idx) {
-              return <div key={idx}>{hr}</div>
-            })}
-          </div>
-          {currentWeek.slice(1).map(function(date, idx) {
-            return <Day key={idx} date={date} />
-          })}
-        </div>
-      </div>
-    )
-  }
-});
-
-var Day = React.createClass({
-  render: function() {
-    return (
-      <div className="day">
-        {operatingHours.map(function(hr, idx) {
-          return ( <Hour key={idx} hour={hr} /> )
-        })}
-      </div>
-    )
-  }
-});
-
-var Hour = React.createClass({
-  render: function() {
-    return (
-      <div className="hour"></div>
-    )
-  }
-});
+console.log("I'm start");
 
 // Your Client ID can be retrieved from your project in the Google
 // Developer Console, https://console.developers.google.com
 var CLIENT_ID = '844715614532-imoanb7n7gprtu38pedhi9crsoidammh.apps.googleusercontent.com';
 var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+var week_events = {}, lookingForEvents = true;
 
-var week_events = {};
+var formatDate = function(isoDate, fmtType) {
+  if (!isoDate) return "";
+  if (fmtType === 'time') {
+    return moment(isoDate).format("hh:mm:ss");
+  }
+  return moment(isoDate).format("MM/DD/YYYY");
+};
 
 /**
  * Check if current user has authorized this application.
  */
 function checkAuth() {
+  console.log('Checking auth')
   gapi.auth.authorize(
     {
       'client_id': CLIENT_ID,
@@ -140,7 +85,6 @@ function listCalendars() {
  * appropriate message is printed.
  */
 function listUpcomingEvents(calendarId) {
-  console.log("I'm in here")
   var request = gapi.client.calendar.events.list({
     'calendarId': calendarId,
     'timeMin': moment().startOf('isoweek').toISOString(),
@@ -176,9 +120,11 @@ function listUpcomingEvents(calendarId) {
         }
         // appendPre(event.summary + ' (' + when + ')')
       }
-      console.log(week_events);
-      ReactDOM.render(<Week calendarEvent={week_events} />, document.getElementById('output'));
+      // if (!(Object.keys(week_events).length)) {
+        lookingForEvents = false;
+      // }
     } else {
+      lookingForEvents = false;
       appendPre('No upcoming events found.');
     }
   });
@@ -196,10 +142,4 @@ function appendPre(message) {
   pre.appendChild(textContent);
 }
 
-var formatDate = function(isoDate, fmtType) {
-  if (!isoDate) return "";
-  if (fmtType === 'time') {
-    return moment(isoDate).format("hh:mm:ss");
-  }
-  return moment(isoDate).format("MM/DD/YYYY");
-};
+console.log("I'm ending");
