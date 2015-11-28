@@ -10,6 +10,7 @@
 // moment().startOf('isoweek').toISOString()
 // moment().endOf('isoweek').toISOString()
 var formatDate = function(isoDate, fmtType) {
+  // console.log(isoDate);
   if (!isoDate) return "";
   if (fmtType === 'time') {
     return moment(isoDate).format("hh:mm:ss");
@@ -40,7 +41,7 @@ var formatDate = function(isoDate, fmtType) {
 var Week = React.createClass({
   render: function() {
     var week_events = this.props.events;
-    // console.log("Calendar: ", week_events)
+    console.log("Calendar: ", week_events)
     return (
       <div>
         <div className="dates">
@@ -74,14 +75,18 @@ var Day = React.createClass({
       <div className="day">
         {operatingHours.map(function(hr, idx) {
           if (self.props.day_events) {
-            for (var i = 0, event; i < self.props.day_events.length; i++) {
-              event = self.props.day_events[i];
-              if (!event.recurringEvent && hr >= event.startTime && hr < event.endTime) {
-                return <Hour key={idx} hour={hr} event={event}  />
+            var hr_events = [];
+            for (var i = 0; i < self.props.day_events.length; i++) {
+              var event = self.props.day_events[i];
+              if (hr.slice(0,2) >= event.startTime.slice(0,2) && hr < event.endTime ) {
+                // console.log("Hour: " + hr, "Event: ", event)
+                hr_events.push(event);
               }
             }
+            return <Hour key={idx} hour={hr} hr_events={hr_events} />
+          } else {
+            return <Hour key={idx} hour={hr} />
           }
-          return <Hour key={idx} hour={hr} />
         })}
       </div>
     )
@@ -90,23 +95,49 @@ var Day = React.createClass({
 
 var Hour = React.createClass({
   render: function() {
-    if (this.props.event)
-      return <div className="hour hasEvent">{this.props.event.summary}</div>
-    else
-      return <div className="hour">
-        <Minute />
-      </div>
+    var self = this;
+    // console.log("Hour: ", this.props.hour, "Events: ", this.props.hr_events)
+    if (this.props.hr_events) {
+      var hr = this.props.hour.slice(0,3);
+      return (<div className="hour">
+        {minutes.map(function(min, idx) {
+          for (var i = 0; i < self.props.hr_events.length; i++) {
+            var hr_event = self.props.hr_events[i];
+            if (hr + min === hr_event.startTime) {
+              return <Minute key={idx} hasEvent={true} event_detail={hr_event} />
+            }
+            if (hr + min >= hr_event.startTime && hr + min < hr_event.endTime) {
+              return <Minute key={idx} hasEvent={true} />
+            }
+          }
+          return <Minute key={idx} />
+        })}
+        </div>)
+    }
+    else {
+      return <div className="hour"></div>
+    }
   }
 });
 
 var Minute = React.createClass({
   render: function() {
-    return (
-      <div className="minute"></div>
-    )
-
+    if (this.props.hasEvent){
+      if (this.props.event_detail) {
+        var startTime = formatDate(this.props.event_detail.startTime, 'time'),
+            endTime = formatDate(this.props.event_detail.endTime, 'time');
+        return <span className="minute minEvent detail">
+          {this.props.event_detail.summary + " (" + this.props.event_detail.startTime +
+          " - " + this.props.event_detail.endTime + ")"}
+        </span>
+      } else {
+        return <span className="minute minEvent"></span>
+      }
+    }
+    else
+      return <span className="minute minNoEvent"></span>
   }
-})
+});
 
 $(window).load(function () {
   var i = setInterval(function () {

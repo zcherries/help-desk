@@ -103,13 +103,12 @@ function listUpcomingEvents(calendarId) {
     if (events.length > 0) {
       for (i = 0; i < events.length; i++) {
         var event = events[i];
-        console.log(event);
+        // console.log(event);
         var when = event.start.dateTime;
         // if (!when) {
         //   when = event.start.date;
         // }
         //build out weekly events
-        // console.log(event);
         if (when) {
           var event_date = formatDate(when),
               startTime = formatDate(when, 'time'),
@@ -126,6 +125,7 @@ function listUpcomingEvents(calendarId) {
         }
         // appendPre(event.summary + ' (' + when + ')')
       }
+      console.log(week_events);
       // if (!(Object.keys(week_events).length)) {
         lookingForEvents = false;
       // }

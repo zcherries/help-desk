@@ -5,12 +5,14 @@
 }*/
 
 #calendar {
-  width: 70%;
-  margin: 0 auto;
+  font-family: Helvetica;
+  width: 100%;
+  /*margin: 0 auto;*/
   text-align: center;
 }
 
 .week {
+  width: 100%;
   display:flex;
   flex-direction: row;
 }
@@ -21,6 +23,7 @@
 }
 
 .dates h3 {
+  font-size: 14px;
   display: flex;
   flex: 1;
   /*align-content: stretch;*/
@@ -30,23 +33,25 @@
   display: flex;
   flex-direction: column;
   align-content: stretch;
-  flex: 1;
+  width: 100px;
+  /*flex: 1;*/
   /*background-color: #f7f7f7;*/
   border: solid 1px #fff;
 }
 
 .schedule div {
-  height: 70px;
+  font-size: 14px;
+  height: 50px;
   border: 1px solid #000;
 }
 
 .day {
-  font-size: 14px;
+  font-size: 10px;
   display: flex;
   flex-direction: column;
   align-content: stretch;
   flex: 1;
-  background-color: #f7f7f7;
+  background-color: #fff;
   /*border: solid 1px #000;*/
 }
 
@@ -56,14 +61,28 @@
 }
 .hour {
   display: flex;
-  height: 70px;
+  flex-direction: column;
+  height: 50px;
   border: 1px solid #000;
 }
 
 .hasEvent {
-  background-color: teal;
+  /*background-color: teal;*/
 }
 
 .minute {
   flex: 1;
+}
+
+.minEvent {
+  background-color: #E4F7F8;
+  opacity: 0.6;
+}
+
+.minNoEvent {
+  /*background-color: #f7f7f7;*/
+}
+
+.detail {
+  z-index: 1;
 }
