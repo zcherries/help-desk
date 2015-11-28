@@ -1,5 +1,3 @@
-console.log("I'm start");
-
 // Your Client ID can be retrieved from your project in the Google
 // Developer Console, https://console.developers.google.com
 var CLIENT_ID = '844715614532-imoanb7n7gprtu38pedhi9crsoidammh.apps.googleusercontent.com';
@@ -9,7 +7,7 @@ var week_events = {}, lookingForEvents = true;
 var formatDate = function(isoDate, fmtType) {
   if (!isoDate) return "";
   if (fmtType === 'time') {
-    return moment(isoDate).format("hh:mm:ss");
+    return moment(isoDate).format("HH:mm:ss");
   }
   return moment(isoDate).format("MM/DD/YYYY");
 };
@@ -18,7 +16,7 @@ var formatDate = function(isoDate, fmtType) {
  * Check if current user has authorized this application.
  */
 function checkAuth() {
-  console.log('Checking auth')
+  // console.log('Checking auth')
   gapi.auth.authorize(
     {
       'client_id': CLIENT_ID,
@@ -85,13 +83,16 @@ function listCalendars() {
  * appropriate message is printed.
  */
 function listUpcomingEvents(calendarId) {
+  // listSettings(calendarId);
+
   var request = gapi.client.calendar.events.list({
     'calendarId': calendarId,
-    'timeMin': moment().startOf('isoweek').toISOString(),
-    'timeMax': moment().endOf('isoweek').toISOString(),
+    'format24HourTime': 'true',
+    'timeMin': moment().startOf('isoweek').add(-7, 'days').toISOString(),
+    'timeMax': moment().startOf('isoweek').toISOString(),
     'showDeleted': false,
     'singleEvents': true,
-    'maxResults': 30,
+    'maxResults': 250,
     'orderBy': 'startTime'
   });
 
@@ -102,20 +103,25 @@ function listUpcomingEvents(calendarId) {
     if (events.length > 0) {
       for (i = 0; i < events.length; i++) {
         var event = events[i];
+        console.log(event);
         var when = event.start.dateTime;
         // if (!when) {
         //   when = event.start.date;
         // }
         //build out weekly events
+        // console.log(event);
         if (when) {
           var event_date = formatDate(when),
               startTime = formatDate(when, 'time'),
-              endTime = formatDate(event.end.dateTime, 'time');
+              endTime = formatDate(event.end.dateTime, 'time'),
+              recurringEvent = event['recurringEventId'] ? true: false;
 
           if (week_events[event_date]) {
-            week_events[event_date].push({summary: event.summary, start: startTime, end: endTime });
+              week_events[event_date].push({summary: event.summary,
+              startTime: startTime, endTime: endTime, recurringEvent: recurringEvent });
           } else {
-            week_events[event_date] = [{summary: event.summary, start: startTime, end: endTime }];
+              week_events[event_date] = [{summary: event.summary,
+              startTime: startTime, endTime: endTime, recurringEvent: recurringEvent }];
           }
         }
         // appendPre(event.summary + ' (' + when + ')')
@@ -130,6 +136,16 @@ function listUpcomingEvents(calendarId) {
   });
 }
 
+function listSettings(calendarId) {
+  var request = gapi.client.calendar.settings.list({
+    'calendarId': calendarId,
+  });
+
+  request.execute(function(resp) {
+    var settings = resp.items;
+    console.log(settings)
+  });
+}
 /**
  * Append a pre element to the body containing the given message
  * as its text node.
@@ -141,5 +157,3 @@ function appendPre(message) {
   var textContent = document.createTextNode(message + '\n');
   pre.appendChild(textContent);
 }
-
-console.log("I'm ending");
