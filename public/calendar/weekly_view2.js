@@ -126,10 +126,12 @@ var Minute = React.createClass({
       if (this.props.event_detail) {
         var startTime = formatDate(this.props.event_detail.startTime, 'time'),
             endTime = formatDate(this.props.event_detail.endTime, 'time');
-        return <span className="minute minEvent detail">
-          {this.props.event_detail.summary + " (" + this.props.event_detail.startTime +
+        return <dl className="minute minEvent detail">
+          {this.props.event_detail.summary}
+          <dt>{" (" + this.props.event_detail.startTime +
           " - " + this.props.event_detail.endTime + ")"}
-        </span>
+          </dt>
+        </dl>
       } else {
         return <span className="minute minEvent"></span>
       }
