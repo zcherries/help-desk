@@ -2,16 +2,36 @@
 // Developer Console, https://console.developers.google.com
 var CLIENT_ID = '844715614532-imoanb7n7gprtu38pedhi9crsoidammh.apps.googleusercontent.com';
 var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
-var week_events = {}, lookingForEvents = true;
 
-var formatDate = function(isoDate, fmtType) {
-  if (!isoDate) return "";
-  if (fmtType === 'time') {
-    return moment(isoDate).format("HH:mm:ss");
+var week_events = {},
+    lookingForEvents = true,
+    currentWeek = [""];
+
+// var startDate = currentWeek[1],
+// var endDate = currentWeek[];
+
+var formatDate = function(dt, fmtType) {
+  if (!dt) return "";
+  switch (fmtType) {
+    case 'time':
+      return moment(dt).format("hh:mm:ss");
+      break;
+    case 'time24':
+      return moment(dt).format("HH:mm:ss");
+      break;
+    case 'day':
+      return moment(dt).format("ddd MM/DD/YYYY");
+      break;
+    default:
+      return moment(dt).format("MM/DD/YYYY");
   }
-  return moment(isoDate).format("MM/DD/YYYY");
 };
-
+var numOfDays = 6;
+for (var i = 0; i < numOfDays; i++) {
+  var date = formatDate(moment().startOf('isoweek').add(i - 7, 'days').toISOString());
+  currentWeek.push(date);
+}
+// console.log("Week: ", currentWeek)
 /**
  * Check if current user has authorized this application.
  */
@@ -82,42 +102,52 @@ function listCalendars() {
  * the authorized user's calendar. If no events are found an
  * appropriate message is printed.
  */
-function listUpcomingEvents(calendarId) {
-  // listSettings(calendarId);
+ var _eventsRequestParameter = {
+   'timeMin': moment().startOf('isoweek').add(-7, 'days').toISOString(),
+   'timeMax': moment().startOf('isoweek').add(-1, 'days').toISOString(),
+   'showDeleted': false,
+   'singleEvents': true,
+   'maxResults': 250,
+   'orderBy': 'startTime'
+ };
 
-  var request = gapi.client.calendar.events.list({
-    'calendarId': calendarId,
-    'format24HourTime': 'true',
-    'timeMin': moment().startOf('isoweek').add(-7, 'days').toISOString(),
-    'timeMax': moment().startOf('isoweek').toISOString(),
-    'showDeleted': false,
-    'singleEvents': true,
-    'maxResults': 250,
-    'orderBy': 'startTime'
-  });
+function listUpcomingEvents(calendarId) {
+  //add calendar id to parameter Object
+  // console.log("Calendar Id: ", calendarId)
+  _eventsRequestParameter['calendarId'] = calendarId;
+  var request = gapi.client.calendar.events.list(_eventsRequestParameter);
 
   request.execute(function(resp) {
     var events = resp.items;
     // appendPre('Upcoming events:');
-
+    // console.log("Events: ", events)
     if (events.length > 0) {
       for (i = 0; i < events.length; i++) {
         var event = events[i];
-        // console.log(event);
-        var when = event.start.dateTime;
+        // var when = event.start.dateTime;
         // if (!when) {
         //   when = event.start.date;
         // }
         //build out weekly events
-        if (when) {
-          var event_date = formatDate(when),
-              startTime = formatDate(when, 'time'),
-              endTime = formatDate(event.end.dateTime, 'time'),
-              recurringEvent = event['recurringEventId'] ? true: false;
+        if (event.start.dateTime) {
+          var event_date = formatDate(event.start.dateTime), startTime = formatDate(event.start.dateTime, 'time24'),
+              endTime = formatDate(event.end.dateTime, 'time24'), recurringEvent = event['recurringEventId'] ? true: false;
 
           if (week_events[event_date]) {
-              week_events[event_date].push({summary: event.summary,
-              startTime: startTime, endTime: endTime, recurringEvent: recurringEvent });
+              //handle duplicates
+              // var duplicateFound = false;
+              // for (var i = 0; i < week_events[event_date].length; i++) {
+              //   var wEvent = week_events[event_date][i];
+              //   if (event.summary === wEvent.summary
+              //       && startTime === wEvent.startTime && endTime === wEvent.endTime) {
+              //         duplicateFound = true;
+              //         break;
+              //       }
+              // }
+              // if (!duplicateFound) {
+                week_events[event_date].push({summary: event.summary,
+                startTime: startTime, endTime: endTime, recurringEvent: recurringEvent });
+              // }
           } else {
               week_events[event_date] = [{summary: event.summary,
               startTime: startTime, endTime: endTime, recurringEvent: recurringEvent }];
@@ -125,7 +155,7 @@ function listUpcomingEvents(calendarId) {
         }
         // appendPre(event.summary + ' (' + when + ')')
       }
-      console.log(week_events);
+      // console.log(week_events);
       // if (!(Object.keys(week_events).length)) {
         lookingForEvents = false;
       // }
@@ -136,16 +166,16 @@ function listUpcomingEvents(calendarId) {
   });
 }
 
-function listSettings(calendarId) {
-  var request = gapi.client.calendar.settings.list({
-    'calendarId': calendarId,
-  });
-
-  request.execute(function(resp) {
-    var settings = resp.items;
-    console.log(settings)
-  });
-}
+// function listSettings(calendarId) {
+//   var request = gapi.client.calendar.settings.list({
+//     'calendarId': calendarId
+//   });
+//
+//   request.execute(function(resp) {
+//     var settings = resp.items;
+//     console.log(settings)
+//   });
+// }
 /**
  * Append a pre element to the body containing the given message
  * as its text node.

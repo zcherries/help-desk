@@ -11,10 +11,17 @@
 // moment().endOf('isoweek').toISOString()
 var formatDate = function(isoDate, fmtType) {
   if (!isoDate) return "";
-  if (fmtType === 'time') {
-    return moment(isoDate).format("hh:mm:ss");
+  switch (fmtType) {
+    case 'time':
+      return moment(isoDate).format("hh:mm:ss");
+      break;
+    case 'day':
+      console.log('day')
+      return moment(isoDate).format("ddd MM/DD/YYYY");
+      break;
+    default:
+      return moment(isoDate).format("MM/DD/YYYY");
   }
-  return moment(isoDate).format("MM/DD/YYYY");
 };
 
 // function build_calendar_structure() {
@@ -45,7 +52,7 @@ var Week = React.createClass({
       <div>
         <div className="dates">
           {currentWeek.map(function(date, idx) {
-            return <h3 key={idx}>{formatDate(date)}</h3>
+            return <h3 key={idx}>{formatDate(date, 'day')}</h3>
           })}
         </div>
 
@@ -102,9 +109,8 @@ var Hour = React.createClass({
 var Minute = React.createClass({
   render: function() {
     return (
-      <div className="minute"></div>
+      <span className="minute"></span>
     )
-
   }
 })
 

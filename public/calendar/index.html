@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="calendar.css" />
-
     <script src="../bower_components/jquery/dist/jquery.min.js"></script>
     <script src="https://fb.me/react-0.14.2.js"></script>
     <script src="https://fb.me/react-dom-0.14.2.js"></script>
@@ -14,19 +12,26 @@
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.min.css" /> -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.4.0/fullcalendar.print.css" /> -->
     <!-- <script type='text/javascript' src='../bower_components/fullcalendar/dist/gcal.js'></script> -->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/student/css/styles.css" />
+    <link rel="stylesheet" href="calendar.css" />
   </head>
   <body>
+    <div id="navbar"></div>
     <div id="authorize-div" style="display: none">
       <span>Authorize access to Google Calendar API</span>
       <!--Button for the user to click to initiate auth sequence -->
       <button id="authorize-button" onclick="handleAuthClick(event)">Authorize</button>
     </div>
+
     <pre id="output"></pre>
     <div id="calendar"></div>
 
+    <script type="text/babel" src="weekly_view2.js"></script>
     <script src="calendar.js"></script>
     <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
-    <script type="text/babel" src="weekly_view2.js"></script>
+    <script type="text/babel" src="../components/navbar.js"></script>
     <!-- <script type='text/javascript'>
       $(document).ready(function() {
           $('#calendar').fullCalendar({
