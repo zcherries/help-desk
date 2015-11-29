@@ -1,4 +1,4 @@
-var BugView = React.creatClass({
+var BugView = React.createClass({
 	closeTag: function (e) {
           // console.log(e)
           $(e.target).closest('div').remove();

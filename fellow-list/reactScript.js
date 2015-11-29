@@ -2,7 +2,7 @@ $(document).ready(function() {
    $.getJSON( "./fellowlist.json", function( data ) {
       var results = [];
       for(var key in data) {
-         document.write("user with the name " + data[key].fellowName + " has a profile picture as shown here" + "<br>")
+         document.write("user with the name " + data[key].fellowName + " has a profile picture as shown here" + "<br>");
       }
    });
 });

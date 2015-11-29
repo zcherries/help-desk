@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$" libraries="{help-desk node_modules}" />
+    <file url="PROJECT" libraries="{JSXTransformer, browser, jquery, less, marked, react, react-0.14.2, react-bootstrap, react-dom, react-dom-0.14.2, socket.io}" />
+    <includedPredefinedLibrary name="ECMAScript 6" />
+    <includedPredefinedLibrary name="Node.js Core" />
+  </component>
+</project>
