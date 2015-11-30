@@ -109,7 +109,7 @@ app.post('/', function(req, res, next) {
 	var newHelpRequest = new HelpRequest(req.body);
 	newHelpRequest.save(function(err, newHelpRequest) {
 		if(err) return console.error(err);
-		socketRef.emit('entry-added', { entryAdded: 'testing' })
+		socketRef.emit('entry-added', { entryAdded: 'testing' });
 		newHelpRequest.speak();
 		res.send(req.body);
 	});
@@ -128,7 +128,6 @@ app.get('/data', function(req, res, next) {
 	var html = '';
 	helprequests.find(function(err, objects) {
 		res.send(objects);
-		return;
 	});
 });
 // retrieve Help Request
@@ -138,7 +137,7 @@ app.get('/data/id=*', function(req, res, next) {
 	var id = path.parse(req.path).base.slice(3);
 	helprequests.findById(id)
 		.then(function(found) {
-			if (!found) {  
+			if (!found) {
 				return res.send('No entry found for _id: ' + id);
 			}
 			return res.send(found);
@@ -170,7 +169,7 @@ app.post('/data/bugs', function(req, res, next) {
 	var newBugAlert = new BugAlert(req.body);
 	newBugAlert.save(function(err, newBugAlert) {
 		if(err) return console.error(err);
-		socketRef.emit('bugalert-added', { entryAdded: 'testing' })
+		socketRef.emit('bugalert-added', { entryAdded: 'testing' });
 		newBugAlert.speak();
 		res.send(req.body);
 	});

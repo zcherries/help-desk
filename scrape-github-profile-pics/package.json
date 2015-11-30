@@ -9,7 +9,6 @@
   "author": "William Carroll",
   "license": "ISC",
   "dependencies": {
-    "fs": "0.0.2",
-    "x-ray": "^2.0.2"
+
   }
 }
