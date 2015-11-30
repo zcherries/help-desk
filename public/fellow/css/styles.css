@@ -42,9 +42,7 @@ a:hover {
 }
 
 #bug-compose {
-	margin-left: 700px;
-	margin-top: 550px;
-	position:absolute;
+
 }
 .form-control {
 	width:350px;
@@ -52,10 +50,14 @@ a:hover {
 
 #submit {
 	margin-top:10px;
-	margin-left:300px;
+	margin-left:280px;
+	font-family:Gotham-Book;
+	height:30px;
+	width:70px;
+	border-radius: 20px;
+	background-color:#888;
+	color:#f8f8f8;
 	border:none;
-	color:white;
-	background-color:#9eb4b1;
 }
 
 .text-center2 {
@@ -117,6 +119,23 @@ a:hover {
 	font-family:Gotham-Book;
 }
 
+#input-submit {
+	margin-left: 5px;
+	border-radius: 20px;
+	background-color:#888;
+	color:#f8f8f8;
+	border:none;
+
+#is-available {
+	font-family: Gotham-Book;
+	background-color:#d8fdd5;
+}
+
+#is-gone {
+	font-family: Gotham-Book;
+	background-color:#d5dadf;
+}
+
 .tag {
 	margin: 0 2px;
 	font-weight: bolder;
@@ -124,5 +143,16 @@ a:hover {
 	border-radius: 2px;
 	background-color:#fff;
 	color:#262626;
+}
+
+.help-text {
+	font-family:BebasNeue;
+	color:#888;
+	font-size: 75px;
+	text-align:center;
+}
+
+li {
+	color: #888;
 }
 

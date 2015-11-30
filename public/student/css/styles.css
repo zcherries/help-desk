@@ -204,18 +204,17 @@ a:hover {
 }
 
 #request-submit {
-	width: 140px;
-	height:40px;
-	background-color:#9eb4b1;
-	color:white;
+	border-radius: 20px;
+	background-color:#888;
+	color:#f8f8f8;
 	border:none;
-	margin-left:157px;
+	position: absolute;
+	right: 0px;
+	margin-right: 15px;
 }
 
 #input-submit {
-	background-color:#9eb4b1;
-	color:white;
-	border:none;
+
 }
 
 .submit-tag {
@@ -266,8 +265,15 @@ a:hover {
 
 .help-text {
 	font-family:BebasNeue;
-	color:#748583;
+	color:#888;
 	font-size: 75px;
+	text-align:center;
+}
+
+.fellow-text {
+	font-family:BebasNeue;
+	color:#748583;
+	font-size: 35px;
 	/*padding-left:135px;*/
 	text-align:right;
 }

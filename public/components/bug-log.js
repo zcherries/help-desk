@@ -1,5 +1,7 @@
 (function() {
 
+  var socket = io();
+
   var author = 'Joe Nayigiziki';
   var dataEndPoint = 'http://localhost:8000/data/bugs';
 
@@ -7,7 +9,7 @@
     render: function() {
       var bugs = this.props.bugs.map(function(bug, idx) {
         return  (
-          <p>{ bug.author + ': ' + bug.content }</p>
+          <p key={idx}>{ bug.author + ': ' + bug.content }</p>
         );
       });
       return (
@@ -72,8 +74,8 @@
     render: function() {
       return(
         <div className='bug-container'>
-          <BugCompose dataEndPoint={ this.props.dataEndPoint } />
           <Log bugs={ this.state.bugs } />
+          <BugCompose dataEndPoint={ this.props.dataEndPoint } mount={}/>
         </div>
       );
     }
