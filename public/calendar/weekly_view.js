@@ -1,34 +1,98 @@
-  var operatingHours = [
-    "09:00:00", "10:00:00", '11:00:00', '12:00:00', '13:00:00', '14:00:00',
-    '15:00:00', '16:00:00', '17:00:00', '18:00:00', '19:00:00', '20:00:00',
-    '21:00:00', '22:00:00'
-  ];
+//this file uses the formatDate function defined in calendar.js
 
-  var minutes = [
-    "00:00", "05:00", "10:00", "15:00", "20:00", "25:00", "30:00",
-    "35:00", "40:00","45:00", "50:00", "55:00"
-  ];
+var operatingHours = [
+  "09:00:00", "10:00:00", '11:00:00', '12:00:00', '13:00:00', '14:00:00',
+  '15:00:00', '16:00:00', '17:00:00', '18:00:00', '19:00:00', '20:00:00',
+  '21:00:00', '22:00:00'
+];
 
-var Week = React.createClass({
+var minutes = [
+  "00:00", "05:00", "10:00", "15:00", "20:00", "25:00", "30:00",
+  "35:00", "40:00","45:00", "50:00", "55:00"
+];
+
+var Calendar = React.createClass({
   getInitialState: function() {
     return { events: {} }
   },
 
   componentDidMount: function() {
+    this.lookForEvents();
+  },
+
+  lookForEvents: function() {
     var self = this;
+    _lookingForEvents = true, week_events = {};
     var i = setInterval(function () {
-          if (!lookingForEvents) {
-              clearInterval(i);
-              // safe to execute your code here
-              self.setState({ events: week_events });
-              // ReactDOM.render(<Week events={week_events} />, document.getElementById('calendar'));
-          }
-      }, 100);
+      if (!_lookingForEvents) {
+        clearInterval(i);
+        // safe to execute your code here
+        // console.log("Week:", week_events)
+        self.setState({ events: week_events });
+        // ReactDOM.render(<Week events={week_events} />, document.getElementById('calendar'));
+      }
+    }, 100);
+  },
+
+  prevWeek: function() {
+    var timeMax = EVENT_REQUEST_CRITERIA['timeMin'];
+    EVENT_REQUEST_CRITERIA['timeMin'] = moment(EVENT_REQUEST_CRITERIA.timeMin).add(-1, 'week').toISOString();
+    EVENT_REQUEST_CRITERIA['timeMax'] = timeMax;
+    // console.log("Time Min: " + EVENT_REQUEST_CRITERIA['timeMin'], "Time Max: " + EVENT_REQUEST_CRITERIA['timeMax']);
+    this.lookForEvents();
+    listUpcomingEvents(EVENT_REQUEST_CRITERIA['calendarId']);
+  },
+
+  nextWeek: function() {
+    var timeMin = EVENT_REQUEST_CRITERIA['timeMax'];
+    EVENT_REQUEST_CRITERIA['timeMin'] = timeMin;
+    EVENT_REQUEST_CRITERIA['timeMax'] = moment(EVENT_REQUEST_CRITERIA.timeMax).add(1, 'week').toISOString();
+    // console.log("Time Min: " + EVENT_REQUEST_CRITERIA['timeMin'], "Time Max: " + EVENT_REQUEST_CRITERIA['timeMax']);
+    this.lookForEvents();
+    listUpcomingEvents(EVENT_REQUEST_CRITERIA['calendarId']);
   },
 
   render: function() {
-    var week_events = this.state.events;
-    console.log("Week: ", currentWeek)
+    // console.log(week_events)
+    var currentWeek = [""];
+    for (var i = 0; i < numOfDays; i++) {
+      var date = moment(EVENT_REQUEST_CRITERIA['timeMin']).add(i, 'days').toISOString();
+      // console.log(date)
+      currentWeek.push(formatDate(date));
+    }
+    return (
+      <div>
+        <div className="navButtons">
+          <button onClick={this.prevWeek}>Previous</button>
+          <button onClick={this.nextWeek}>Next</button>
+        </div>
+        <Week currentWeek={currentWeek} events={this.state.events} />
+      </div>
+    )
+  }
+})
+
+var Week = React.createClass({
+  // getInitialState: function() {
+  //   return { events: {} }
+  // },
+  //
+  // componentDidMount: function() {
+  //   var self = this;
+  //   var i = setInterval(function () {
+  //         if (!lookingForEvents) {
+  //             clearInterval(i);
+  //             // safe to execute your code here
+  //             self.setState({ events: week_events });
+  //             // ReactDOM.render(<Week events={week_events} />, document.getElementById('calendar'));
+  //         }
+  //     }, 100);
+  // },
+
+  render: function() {
+    var week_events = this.props.events;
+    var currentWeek = this.props.currentWeek;
+    // console.log("Week: ", currentWeek)
     return (
       <div>
         <div className="dates">
@@ -127,4 +191,14 @@ var Minute = React.createClass({
   }
 });
 
-ReactDOM.render(<Week />, document.getElementById('calendar'));
+// $(window).load(function () {
+//   var i = setInterval(function () {
+//       if (!lookingForEvents) {
+//           clearInterval(i);
+//           // safe to execute your code here
+//           ReactDOM.render(<Week events={week_events} />, document.getElementById('calendar'));
+//       }
+//   }, 100);
+// });
+
+ReactDOM.render(<Calendar />, document.getElementById('calendar'));
