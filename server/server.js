@@ -201,20 +201,29 @@ app.get('/townhall/topics', function(req, res, next) {
 
 app.post('/townhall/topics', function(req, res, next) {
 	console.log('In app.post townhall topics');
-	townhallTopics.findOne({title: req.body.title}, function(err, match){
-		if (err) console.error("Townhall topic post error: ", err);
-		else {
-			if (!match) {
-				townhallTopics.create(req.body).then(function(){
-					townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
-						res.send({status: 201, data: topics});
+	if (req.body.action === "remove") {
+		townhallTopics.remove({_id: req.body.topic_id}, function(err, topic) {
+			if (err) { throw error; }
+			townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+				res.send({status: 201, data: topics});
+			});
+		})
+	} else if(req.body.title) {
+		townhallTopics.findOne({title: req.body.title}, function(err, match){
+			if (err) console.error("Townhall topic post error: ", err);
+			else {
+				if (!match) {
+					townhallTopics.create(req.body).then(function(){
+						townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+							res.send({status: 201, data: topics});
+						});
 					});
-				});
-			} else {
-				res.status(400).send({status: 400, data: null, message: "Topic not found"});
+				} else {
+					res.status(400).send({status: 400, data: null, message: "Topic not found"});
+				}
 			}
-		}
-	});
+		});
+	}
 });
 
 app.post('/townhall/topics/topic/question', function(req, res, next) {
@@ -223,13 +232,31 @@ app.post('/townhall/topics/topic/question', function(req, res, next) {
 		if (err) console.error("Townhall topic question post error: ", err);
 		else {
 			if (topic) {
-				var question = { title: req.body.title,
-					resources: req.body.resources,
-					votes: req.body.votes
+				if (req.body.action === "save") {
+					var question = { title: req.body.title,
+						resources: req.body.resources,
+						votes: req.body.votes
+					}
+					topic.questions.push(question);
 				}
-				topic.questions.push(question);
+				else {
+					var question = topic.questions.id(req.body.question_id);
+					if (req.body.action === "remove") {
+						question.remove();
+					}
+					if (req.body.action === "handleVote") {
+						question.votes = req.body.vote;
+					}
+					if (req.body.action === "handleResources") {
+						question.resources = req.body.resources;
+					}
+				}
+
 				topic.save(function(err) {
-					if (err) { throw err; }
+					if (err) {
+						console.log("Topic save error");
+						throw err;
+					}
 					else { res.send({status: 201, data: topic.questions}); }
 				});
 			} else {
@@ -238,26 +265,6 @@ app.post('/townhall/topics/topic/question', function(req, res, next) {
 		}
 	});
 });
-
-app.post('/townhall/topics/topic/question/*', function(req, res, next) {
-	console.log("About to edit question")
-	townhallTopics.findOne({_id: req.body.topic_id}, function(err, topic) {
-		if (err) { console.error("Finding topic Error: ", err); }
-
-		var question = topic.questions.id(req.body.question_id);
-		if (req.body.vote) {
-			question.votes = req.body.vote;
-		} else if (req.body.resources) {
-			question.resources = req.body.resources;
-		}
-
-		topic.save(function(err) {
-			if (err) { throw err; }
-			else {
-				res.send({status: 201, data: topic.questions}); }
-		});
-	});
-})
 
 // static files
 app.use(express.static('./public'));

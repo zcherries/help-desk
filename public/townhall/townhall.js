@@ -29,7 +29,7 @@ var Townhall = React.createClass({
     $.ajax({
       type: 'POST',
       url: this.props.url,
-      data: {title: topic},
+      data: topic,
       success: function(response) {
         this.setState({topics: response.data});
       }.bind(this),
@@ -39,12 +39,18 @@ var Townhall = React.createClass({
     });
   },
 
+  removeTopic: function(topic) {
+    topic.action = "remove"
+    this.postTopic(topic);
+  },
+
   render: function() {
     var topics = this.state.topics.map(function(topic, idx) {
       return (
-        <Topic key={idx} topicId={topic._id} text={topic.title} questions={topic.questions} />
+        <Topic key={idx} topicId={topic._id} text={topic.title}
+          removeTopic={this.removeTopic} questions={topic.questions} />
       )
-    });
+    }.bind(this));
     return (
       <div className="townhall">
         <h1>Townhall</h1>
@@ -63,13 +69,17 @@ var Topic = React.createClass({
     return { questions: [] }
   },
 
+  remove: function() {
+    this.props.removeTopic({topic_id: this.props.topicId});
+  },
+
   listQuestions: function() {
     //var self = this;
     if (this.state.questions.length) {
       return this.state.questions.map(function(question, idx) {
         return (
           <Question key={idx} q_id={question._id}
-            updateVote={this.updateVote}
+            removeQuestion={this.removeQuestion} updateVote={this.updateVote}
             updateResources={this.updateResources}>{question}</Question>
         )
       }.bind(this));
@@ -77,7 +87,7 @@ var Topic = React.createClass({
     return this.props.questions.map(function(question, idx) {
       return (
         <Question key={idx} q_id={question._id}
-          updateVote={this.updateVote}
+          removeQuestion={this.removeQuestion} updateVote={this.updateVote}
           updateResources={this.updateResources}>{question}</Question>
       )
     }.bind(this));
@@ -99,41 +109,26 @@ var Topic = React.createClass({
     });
   },
 
-  updateVote: function(vote) {
-    vote.topic_id = this.props.topicId;
-    $.ajax({
-      type: 'POST',
-      url: 'topics/topic/question/vote',
-      data: vote,
-      success: function(response) {
-        this.setState({ questions: response.data });
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.log("Error posting to: " + xhr, status, err.toString());
-      }.bind(this)
-    });
+  removeQuestion: function(question) {
+    question.action = "remove";
+    this.postQuestion(question);
   },
 
-  updateResources: function(resources) {
-    resources.topic_id = this.props.topicId;
-    $.ajax({
-      type: 'POST',
-      url: 'topics/topic/question/resources',
-      data: resources,
-      success: function(response) {
-        this.setState({ questions: response.data });
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.log("Error posting to: " + xhr, status, err.toString());
-      }.bind(this)
-    });
+  updateVote: function(question) {
+    question.action = "handleVote";
+    this.postQuestion(question);
+  },
+
+  updateResources: function(question) {
+    question.action = "handleResources";
+    this.postQuestion(question);
   },
 
   render: function() {
     var topic_questions = this.listQuestions();
     return (
       <div className="topic">
-        <h3>{this.props.text}</h3>
+        <h3>{this.props.text} <button className="btn btn-sm btn-danger glyphicon glyphicon-remove" onClick={this.remove}></button></h3>
         <QuestionForm postQuestion={this.postQuestion} />
         {topic_questions}
       </div>
@@ -143,6 +138,10 @@ var Topic = React.createClass({
 
 //Question Component
 var Question = React.createClass({
+  remove: function() {
+    this.props.removeQuestion({question_id: this.props.q_id});
+  },
+
   upVote: function() {
     var count = this.props.children.votes + 1
     this.props.updateVote({question_id: this.props.q_id, vote: count});
@@ -168,7 +167,10 @@ var Question = React.createClass({
   render: function() {
     return (
       <div className="question">
-        <span className="question_title">{this.props.children.title}</span>
+        <span className="question_title">
+          {this.props.children.title}&nbsp;
+          <button className="btn btn-sm btn-danger glyphicon glyphicon-remove" onClick={this.remove}></button>
+        </span>
         <span className="votes">Votes: {this.props.children.votes}
           &nbsp;&nbsp;<button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.upVote} />
           &nbsp;<button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.downVote} />
@@ -195,7 +197,7 @@ var TopicForm = React.createClass({
     var topic = this.state.topic.trim();
     if (topic) {
       console.log(this.state.topic);
-      this.props.postTopic(topic);
+      this.props.postTopic({title: topic});
     }
     this.setState({topic: ''});
   },
@@ -226,7 +228,7 @@ var QuestionForm = React.createClass({
     e.preventDefault();
     var question = this.state.question.trim();
     if (question) {
-      this.props.postQuestion({ title: question, resources: [], votes: 0 })
+      this.props.postQuestion({ title: question, resources: [], votes: 0, action: "save" })
     }
     this.setState({question: ''});
   },

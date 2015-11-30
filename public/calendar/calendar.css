@@ -2,12 +2,21 @@
   margin: 0;
   padding: 0;
 }*/
+#output {
+  font-family: Helvetica;
+  text-align: center;
+}
 
 #calendar {
   font-family: Helvetica;
   width: 95%;
   margin: 0 auto;
   text-align: center;
+}
+
+.navButtons button {
+  width: 80px;
+  margin: 5px;
 }
 
 .dates {
