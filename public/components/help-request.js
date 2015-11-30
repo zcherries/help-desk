@@ -107,7 +107,6 @@ var TagSubmit = React.createClass({
 });
 
 var HelpRequestTab = React.createClass({
-
   clearForm: function() {
     this.refs.content.value = '';
   },
