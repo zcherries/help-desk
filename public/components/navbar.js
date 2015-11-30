@@ -1,53 +1,26 @@
 //Component for User profile
 var NavUser = React.createClass({
-  getInitialState: function() {
-    return {
-      listVisible: false
-    };
-  },
-  select: function(item) {
-    this.props.selected = item;
-  },
-  show: function() {
-    this.setState({ listVisible: true });
-    document.addEventListener("click", this.hide);
-  },
-  hide: function() {
-    this.setState({ listVisible: false });
-    document.removeEventListener("click", this.hide);
-  },
   render: function() {
     var placeholder = this.props.data;
     var placeholderUrls = this.props.data[0].urls;
     var userListItems = placeholderUrls.map(function(item,idx) {
-      return (<li key={idx}><a href={item.link}>{item.text}</a> </li>);
+      return (<MenuItem key={idx} href={item.link}>{item.text}</MenuItem>);
     });
     return (
-        <div>
-          <p onClick={this.show} role="button" className="dropdown-toggle" data-toggle="dropdown"> Welcome, {placeholder[0].username} <span className="caret"></span> </p>
-          <ul id='dropdown' className={"dropdown-menu" + (this.state.listVisible ? <ul>{userListItems}</ul> : "" )}>{userListItems}</ul>
-        </div>
+      <NavDropdown eventKey={3} title={"Welcome, " + placeholder[0].username} id="basic-nav-dropdown">
+        {userListItems}
+      </NavDropdown>
     );
   }
 });
 
-
 var userData = [
   {id: 1,
-    username: 'default-user',
+    username: 'Student',
     slack: '#',
     github: '#',
-    urls: [{text:'My Cohort',link:'#'},{text:'slackIt',link:'#'},{text:'gitHubIt',link:'#'},{text:'reactIt',link:'#'},{text:'nodeIt',link:'3'}]
-  },
-];
-
-var orgData = [
-  {id: 1, title: 'Syllabus', link: '#'},
-  {id: 2, title: 'Repo List', link: '#'},
-  {id: 3, title: 'Wiki', link: '#'},
-  {id: 4, title: 'Help Desk', link: '#'},
-  {id: 5, title: 'Calendar', link: '/calendar'},
-  {id: 6, title: 'Townhall', link: '/townhall'}
+    urls: [{text:'My Cohort',link:'#'},{text:'slackIt',link:'#'},{text:'gitHubIt',link:'#'},{text:'reactIt',link:'#'},{text:'nodeIt',link:'#'}]
+  }
 ];
 
 //Component for MKS Org links
@@ -63,32 +36,6 @@ var NavOrg = React.createClass({
       <div>
         <div className='org-list'>{orgListItems}<span><a href="#" >Help Desk</a></span></div>
       </div>
-    )
-  }
-});
-
-//component to render multiple components inside navbar
-var NavContainer = React.createClass({
-  render: function() {
-    return (
-      <nav className="navbar ">
-        <div className="container-fluid">
-          <div className="collapse navbar-collapse" >
-            <div className="navbar-left">
-            </div>
-            <ul className="nav navbar-nav navbar-right" >
-              <li>
-                <NavOrg data={orgData} />
-
-              </li>
-
-              <li>
-                <NavUser data={userData} />
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
     )
   }
 });
@@ -109,7 +56,7 @@ var NavbarHD = React.createClass({
       <Navbar fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="/student/#">Student Help Desk</a>
+            <a href="/calendar/#">Help Desk</a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
@@ -120,17 +67,10 @@ var NavbarHD = React.createClass({
             <NavItem eventKey={2} href="http://wiki.makersquare.com/" target="_blank">Student Wiki</NavItem>
             <NavItem eventKey={2} href="/townhall/#">Townhall</NavItem>
             <NavItem eventKey={2} href="/calendar/#">Calendar</NavItem>
-
           </Nav>
           <Nav pullRight>
             <NavItem eventKey={1} onClick={this.toggle}>Toggle Help Desk</NavItem>
-            <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
-              <MenuItem eventKey={3.1}>Action</MenuItem>
-              <MenuItem eventKey={3.2}>Another action</MenuItem>
-              <MenuItem eventKey={3.3}>Something else here</MenuItem>
-              <MenuItem divider />
-              <MenuItem eventKey={3.3}>Separated link</MenuItem>
-            </NavDropdown>
+            <NavUser data={userData} />
           </Nav>
         </Navbar.Collapse>
       </Navbar>
