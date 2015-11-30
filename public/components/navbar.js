@@ -262,7 +262,7 @@ var TagSubmit = React.createClass({
           <input type="text" id='input' autoComplete="off" placeholder="Enter tags" ref="tag"/>
           <input type="submit" id='input-submit' value="Add Tags" />
         </form>
-        <TagContainer data={ this.state.inputTags } parentRemoveTag={ this.parentRemoveTag } />
+        <TagContainer ref="tagContain" data={ this.state.inputTags } parentRemoveTag={ this.parentRemoveTag } />
       </div>
     );
   }
@@ -279,6 +279,7 @@ var HelpRequestTab = React.createClass({
     $.post('/', _formData, function(data) {
       console.log('successfully posted! data: ' + JSON.stringify(data));
       this.clearForm();
+
     }.bind(this));
   },
   render: function() {

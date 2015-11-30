@@ -75,7 +75,7 @@
 	var HelpRequestManager = React.createClass({
 		parentHandleClick: function(data) {
 			// console.log('Fellow accepted HR');
-			// this.getMongo();
+			 this.getMongo();
 		},
 		getMongo: function() {
 			$.get(this.props.source, function(data) {

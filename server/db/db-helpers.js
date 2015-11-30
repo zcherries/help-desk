@@ -31,6 +31,7 @@ var userSchema = module.exports.userSchema = mongoose.Schema({
 	imgsrc: String,
 	isFellow: Boolean,
 	availability: Number
+});
 
 var questionSchema = module.exports.questionSchema = mongoose.Schema({
 	title: String,
@@ -56,7 +57,9 @@ bugAlertSchema.methods.speak = function() {
 };
 
 userSchema.methods.speak = function() {
-	console.log('-- New User --');
+  console.log('-- New User --');
+};
+
 townhallTopicSchema.methods.speak = function() {
 	console.log('-- Townhall Topic --');
 	console.log(JSON.stringify(this));
