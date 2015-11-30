@@ -12,7 +12,6 @@ var BugAlert = dbHelpers.BugAlert;
 var bugAlertSchema = dbHelpers.bugAlertSchema;
 var User = dbHelpers.User;
 var userSchema = dbHelpers.userSchema;
-
 var townhallTopicSchema = dbHelpers.townhallTopicSchema;
 
 var app = express();
@@ -64,11 +63,6 @@ db.once('open', function() {
 
 // Help Request helper functions
 
-// var countOpenH = function(hrObj) {
-//   var conditions = { _id: hrObj._id },
-//   helprequests.find()
-// }
-
 var acceptHelpRequest = function(hrObj) {
 	var conditions = { _id: hrObj._id },
 			update = { $set: { accepted: true, assignedFellow: hrObj.name } },
@@ -113,7 +107,6 @@ var addFeedbackSurvey = function(hrObj) {
 };
 
 /* -- BEGIN http server -- */
-
 
 app.post('/', function(req, res, next) {
 
@@ -206,15 +199,7 @@ app.post('/data/bugs/delete', function(req, res, next) {
 });
 
 
-// app.get('/data/users', function(req, res, next) {
-//  users.find(function(err, userEntries) {
-//      return res.send(userEntries);
-//  });
-// });
-
-
-
-  var usersList = [
+var usersList = [
     {firstname:"Andrew",lastname:"Howes",email:"none",gitHandle:"andrewhws",location:"Los Angeles, CA.",imgsrc:"../assets/student-avatars/0.jpg", isFellow: false, availability: 0},
     {firstname:"Aram",lastname:"Simonian",email:"none",gitHandle:"aram91",location:"Los Angeles, CA.",imgsrc:"../assets/student-avatars/1.jpg", isFellow: false, availability: 0},
     {firstname:"Casandra",lastname:"Silva",email:"silvacasandra@gmail.com",gitHandle:"casandrawith1s",location:"Los Angeles, CA.",imgsrc:"../assets/student-avatars/2.jpg", isFellow: false, availability: 0},
@@ -253,22 +238,6 @@ app.get('/data/users', function(req, res, next) {
 		res.send(userEntries);
 	});
 });
-
-
-// add new users?
-// app.post('/data/users', function(req, res, next) {
-//     // might be able to data validate client-side
-//     console.log('req.body: ' + JSON.stringify(req.body));
-//     var newUser = new User(req.body);
-//     newUser.save(function(err, newUser) {
-//         if(err) {
-//             return console.error(err);
-//         }
-//         // socketRef.emit('entry-added', { entryAdded: 'testing' })
-//         // newHelpRequest.speak();
-//         res.send(req.body);
-//     });
-// });
 
 
 // OR
@@ -389,8 +358,4 @@ if (!usersInitialized) {
     usersInitialized = true;
   });
 }
-
-// app.listen(PORT, function() {
-// 	console.log('listening on port http://localhost:' + PORT);
-// });
 /* -- END http server -- */
