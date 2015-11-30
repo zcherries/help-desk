@@ -303,16 +303,16 @@ console.log('listening on port http://localhost:' + PORT);
 
 console.log('new users being addded?');
 
-usersList.forEach(function(item, i, array) {
-    var newUser = new User(item);
-    newUser.save(function (err, obj) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log('-- New User --');
-        console.log(JSON.stringify(obj, null, 2));
-    });
-});
+//usersList.forEach(function(item, i, array) {
+//    var newUser = new User(item);
+//    newUser.save(function (err, obj) {
+//        if (err) {
+//            return console.error(err);
+//        }
+//        console.log('-- New User --');
+//        console.log(JSON.stringify(obj, null, 2));
+//    });
+//});
 
 // app.listen(PORT, function() {
 // 	console.log('listening on port http://localhost:' + PORT);
