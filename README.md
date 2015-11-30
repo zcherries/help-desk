@@ -1,13 +1,13 @@
-# project-november
-Greenfield Project
+# Help Desk for Makersquare
+Legacy Project
 
-Our team's goal is to revamp Makersquare's current Help Desk application. Our solution aims to continue the tradition of having a simple UI for Help Requests (HRs). We believe that it should be easy for students to submit help requests. Fellows too should have a simple interface to manage these HRs. We balance the desire to provide users with a convenient, fast way to submit HRs with another desire, which is to collect useful information from our users with which we can provide the Makersquare administration.
+Our team's goal is to revamp Makersquare's current Help Desk application. Our solution aims to continue the tradition of having a simple UI for Help Requests (HRs). We believe that it should be easy for students to submit help requests. Fellows too should have a simple interface to manage these HRs, as well as to report any bugs found in the curriculum. We balance the desire to provide users with a convenient, fast way to submit HRs with another desire, which is to collect useful information from our users with which we can provide the Makersquare administration.
 
 ###Start me up!
 
 ```
 # from the project root directory...
-$ mongod 
+$ mongod
 $ nodemon server/server.js
 ```
 
@@ -40,6 +40,3 @@ Please .gitignore your node_modules and bower_components. We do not want to clut
 Down the road, we would like to implement React-Router (https://www.npmjs.com/package/react-router), an npm module that synchronizes your URL with your views. This is desirable for cohesion between views, browser history, and URLs -- ultimate cohesion.
 
 More to come later...
-
-Sincerely,
-The Witty Wombats
