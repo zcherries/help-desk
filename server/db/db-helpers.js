@@ -34,17 +34,6 @@ var userSchema = module.exports.userSchema = mongoose.Schema({
 });
 
 
-
-// var fellowSchema = module.exports.fellowReqSchema = mongoose.Schema({
-// 	firstname: String,
-// 	lastname: String,
-// 	email: String,
-// 	gitHandle: String,
-// 	location: String,
-// 	imgsrc: String,
-// 	availability: Number
-// });
-
 helpReqSchema.methods.speak = function() {
 	console.log('-- Help Request --');
 	console.log(JSON.stringify(this));
