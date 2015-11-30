@@ -2,6 +2,7 @@ var serverHelpers = require('./server-helpers.js');
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var url = require('url');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var dbHelpers = require('./db/db-helpers.js');
@@ -11,6 +12,8 @@ var BugAlert = dbHelpers.BugAlert;
 var bugAlertSchema = dbHelpers.bugAlertSchema;
 var User = dbHelpers.User;
 var userSchema = dbHelpers.userSchema;
+
+var townhallTopicSchema = dbHelpers.townhallTopicSchema;
 
 var app = express();
 var server = http.createServer(app);
@@ -45,8 +48,8 @@ io.on('connection', function (socket) {
 
 
 /* -- BEGIN mongo setup --*/
-var helprequests, bugalerts, users; // Collection names
-mongoose.connect('mongodb://localhost/test');
+var helprequests, bugalerts, townhallTopics, users; // Collection names
+mongoose.connect('mongodb://localhost/helpdesk');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -54,6 +57,7 @@ db.once('open', function() {
 	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
 	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
 	users = mongoose.model('User', userSchema, 'users');
+	townhallTopics = mongoose.model('TownhallTopic', townhallTopicSchema)
 });
 /* -- END mongo setup -- */
 
@@ -291,6 +295,73 @@ app.post('/data/users/delete', function(req, res, next) {
 	});
 });
 
+//townhall topics handlers
+app.get('/townhall/topics', function(req, res, next) {
+	console.log('In app.get townhall topics');
+	townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+		res.send({status: 200, data: topics});
+	});
+});
+
+app.post('/townhall/topics', function(req, res, next) {
+	console.log('In app.post townhall topics');
+	townhallTopics.findOne({title: req.body.title}, function(err, match){
+		if (err) console.error("Townhall topic post error: ", err);
+		else {
+			if (!match) {
+				townhallTopics.create(req.body).then(function(){
+					townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+						res.send({status: 201, data: topics});
+					});
+				});
+			} else {
+				res.status(400).send({status: 400, data: null, message: "Topic not found"});
+			}
+		}
+	});
+});
+
+app.post('/townhall/topics/topic/question', function(req, res, next) {
+	console.log("I'm inside app.post topic/question")
+	townhallTopics.findOne({_id: req.body.topic_id}, function(err, topic) {
+		if (err) console.error("Townhall topic question post error: ", err);
+		else {
+			if (topic) {
+				var question = { title: req.body.title,
+					resources: req.body.resources,
+					votes: req.body.votes
+				}
+				topic.questions.push(question);
+				topic.save(function(err) {
+					if (err) { throw err; }
+					else { res.send({status: 201, data: topic.questions}); }
+				});
+			} else {
+				res.status(400).send({status: 400, data: null, message: "Topic not found"});
+			}
+		}
+	});
+});
+
+app.post('/townhall/topics/topic/question/*', function(req, res, next) {
+	console.log("About to edit question")
+	townhallTopics.findOne({_id: req.body.topic_id}, function(err, topic) {
+		if (err) { console.error("Finding topic Error: ", err); }
+
+		var question = topic.questions.id(req.body.question_id);
+		if (req.body.vote) {
+			question.votes = req.body.vote;
+		} else if (req.body.resources) {
+			question.resources = req.body.resources;
+		}
+
+		topic.save(function(err) {
+			if (err) { throw err; }
+			else {
+				res.send({status: 201, data: topic.questions}); }
+		});
+	});
+})
 
 // static files
 app.use(express.static('./public'));
@@ -303,16 +374,18 @@ console.log('listening on port http://localhost:' + PORT);
 
 console.log('new users being addded?');
 
-//usersList.forEach(function(item, i, array) {
-//    var newUser = new User(item);
-//    newUser.save(function (err, obj) {
-//        if (err) {
-//            return console.error(err);
-//        }
-//        console.log('-- New User --');
-//        console.log(JSON.stringify(obj, null, 2));
-//    });
-//});
+var initializeUsers = _.once(usersList.forEach(function(item, i, array) {
+    var newUser = new User(item);
+    newUser.save(function (err, obj) {
+        if (err) {
+            return console.error(err);
+        }
+        console.log('-- New User --');
+        console.log(JSON.stringify(obj, null, 2));
+    });
+}));
+
+initializeUsers();
 
 // app.listen(PORT, function() {
 // 	console.log('listening on port http://localhost:' + PORT);
