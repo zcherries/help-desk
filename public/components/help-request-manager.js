@@ -1,7 +1,5 @@
 (function() {
 
-	var COUNT = [0,0,0];
-
 	var fellowInfo = {
 		name: 'Joe Nayigiziki'
 	};
@@ -139,11 +137,6 @@
 						<h3 className="text-center">Closed</h3>
 						{ closedHRs }
 					</div>
-					<div>{COUNT.map(el => {
-											return (
-												<p>{el}</p>
-											);
-										})}</div>
 				</div>
 			);
 		}

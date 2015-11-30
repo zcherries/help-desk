@@ -175,7 +175,6 @@ app.get('/data/bugalerts', function(req, res, next) {
     var html = '';
     bugalerts.find(function(err, objects) {
         res.send(objects);
-        return;
     });
 });
 

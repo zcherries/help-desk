@@ -195,7 +195,7 @@ var _formData = {
 };
 
 var author = 'Joe Nayigiziki';
-var dataEndPoint = 'http://localhost:8000/data/bugs';
+var dataEndPoint = 'http://localhost:8000/data/bugalerts';
 
 
 var Log = React.createClass({

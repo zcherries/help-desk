@@ -223,7 +223,7 @@ var TagContainer = React.createClass({
 var TagSubmit = React.createClass({
   getInitialState: function() {
     return {
-      inputTags: [],
+      inputTags: []
     };
   },
   clearForms: function() {
@@ -262,6 +262,7 @@ var TagSubmit = React.createClass({
 var HelpRequestTab = React.createClass({
   clearForm: function() {
     this.refs.content.value = '';
+    this.refs
   },
   sendRequest: function(e) {
     e.preventDefault();
