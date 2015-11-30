@@ -41,6 +41,15 @@ var userData = [
   },
 ];
 
+var orgData = [
+  {id: 1, title: 'Syllabus', link: '#'},
+  {id: 2, title: 'Repo List', link: '#'},
+  {id: 3, title: 'Wiki', link: '#'},
+  {id: 4, title: 'Help Desk', link: '#'},
+  {id: 5, title: 'Calendar', link: '/calendar'},
+  {id: 6, title: 'Townhall', link: '/townhall'}
+];
+
 //Component for MKS Org links
 var NavOrg = React.createClass({
   getInitialState: function() {
@@ -262,7 +271,6 @@ var TagSubmit = React.createClass({
 var HelpRequestTab = React.createClass({
   clearForm: function() {
     this.refs.content.value = '';
-    this.refs
   },
   sendRequest: function(e) {
     e.preventDefault();
