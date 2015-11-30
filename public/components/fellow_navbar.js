@@ -102,7 +102,7 @@ var NavbarHD = React.createClass({
       <Navbar fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="/student/#">Help Desk Manager</a>
+            <a href="/fellow/#">Help Desk Manager</a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
