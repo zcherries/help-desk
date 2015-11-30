@@ -2,6 +2,7 @@
 body {
   font-family: BebasNeue;
 }
+
 .townhall {
   width: 70%;
   margin: 0 auto;
@@ -69,4 +70,12 @@ span.votes {
 
 span.votes button {
   top: -5px;
+}
+
+.glyphicon-remove {
+  margin-left: 5px;
+  padding: 1px;
+  font-size: 10px;
+  background-color: #888;
+  border-color: #888;
 }
