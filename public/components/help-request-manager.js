@@ -1,4 +1,7 @@
 (function() {
+
+	var COUNT = [0,0,0];
+
 	var fellowInfo = {
 		name: 'Joe Nayigiziki'
 	};
@@ -31,6 +34,7 @@
 			console.log('obj: ' + obj.accepted);
 			switch (this.props.status) {
 				case 'outstanding':
+					COUNT[0]++;
 					return (
 						<div className="db-entry" id='needs-help' onClick={ this.handleClick }>
 							<p>{ obj.author } needs help with: </p>
@@ -40,6 +44,7 @@
 						</div>
 					);
 				case 'in-progress':
+					COUNT[1]++;
 					return (
 						<div className="db-entry" id='is-helping' onClick={ this.handleClick }>
 							<p>{ obj.assignedFellow } is helping { obj.author }</p>
@@ -48,6 +53,7 @@
 						</div>
 					);
 				case 'closed':
+					COUNT[2]++;
 					return (
 						<div className="db-entry" id='helped' onClick={ this.handleClick }>
 							<p>{ obj.assignedFellow } helped { obj.author } with:</p>
@@ -83,6 +89,7 @@
 			this.getMongo();
 		},
 		componentDidMount: function() {
+			COUNT = [0, 0, 0];
 			var socket = io();
 			socket.on('fellow-closed', function(data) {
 				console.log('fellow-closed: ' + JSON.stringify(data));
@@ -132,6 +139,11 @@
 						<h3 className="text-center">Closed</h3>
 						{ closedHRs }
 					</div>
+					<div>{COUNT.map(el => {
+											return (
+												<p>{el}</p>
+											);
+										})}</div>
 				</div>
 			);
 		}

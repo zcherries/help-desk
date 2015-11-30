@@ -125,6 +125,15 @@ a:hover {
 	background-color:#888;
 	color:#f8f8f8;
 	border:none;
+
+#is-available {
+	font-family: Gotham-Book;
+	background-color:#d8fdd5;
+}
+
+#is-gone {
+	font-family: Gotham-Book;
+	background-color:#d5dadf;
 }
 
 .tag {
