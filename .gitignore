@@ -59,3 +59,5 @@ build/
 dist/
 .DS_store
 public/data/.DS_Store
+
+.idea/workspace.xml
