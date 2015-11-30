@@ -228,7 +228,7 @@ var QuestionForm = React.createClass({
     e.preventDefault();
     var question = this.state.question.trim();
     if (question) {
-      this.props.postQuestion({ title: question, resources: [], votes: 0, action: "save" })
+      this.props.postQuestion({ title: question, resources: [""], votes: 0, action: "save" })
     }
     this.setState({question: ''});
   },
