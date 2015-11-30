@@ -8,6 +8,17 @@
 	src:url('../../student/css/BebasNeue.otf');
 }
 
+li {
+	color: #888;
+}
+
+.help-text {
+  font-family:BebasNeue;
+  color:#888;
+  font-size: 75px;
+  text-align:center;
+}
+
 #dropdown {
 	position:absolute;
 }
@@ -144,15 +155,3 @@ a:hover {
 	background-color:#fff;
 	color:#262626;
 }
-
-.help-text {
-	font-family:BebasNeue;
-	color:#888;
-	font-size: 75px;
-	text-align:center;
-}
-
-li {
-	color: #888;
-}
-

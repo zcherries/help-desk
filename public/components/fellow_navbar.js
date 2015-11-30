@@ -111,7 +111,7 @@ var NavbarHD = React.createClass({
             <NavItem eventKey={1} href="http://bookstrap.makersquare.com/curriculum/curriculum" target="_blank">Syllabus</NavItem>
             <NavItem eventKey={2} href="http://bookstrap.makersquare.com/curriculum" target="_blank">Repo List</NavItem>
             <NavItem eventKey={2} href="http://wiki.makersquare.com/" target="_blank">Student Wiki</NavItem>
-            <NavItem eventKey={2} href="/towhall/#">Townhall</NavItem>
+            <NavItem eventKey={2} href="/townhall/#">Townhall</NavItem>
             <NavItem eventKey={2} href="/calendar/#">Calendar</NavItem>
 
           </Nav>
@@ -195,7 +195,7 @@ var _formData = {
 };
 
 var author = 'Joe Nayigiziki';
-var dataEndPoint = 'http://localhost:8000/data/bugs';
+var dataEndPoint = 'http://localhost:8000/data/bugalerts';
 
 
 var Log = React.createClass({

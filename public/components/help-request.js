@@ -114,10 +114,12 @@ var HelpRequestTab = React.createClass({
     e.preventDefault();
     _formData.content = this.refs.content.value.trim()
     _formData.timesubmitted = new Date();
+
     $.post('/', _formData, function(data) {
       console.log('successfully posted! data: ' + JSON.stringify(data));
       this.clearForm();
     }.bind(this));
+    _formData.tags = [];
   },
   render: function() {
     return (
