@@ -2,6 +2,7 @@ var serverHelpers = require('./server-helpers.js');
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var url = require('url');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var dbHelpers = require('./db/db-helpers.js');
@@ -11,6 +12,7 @@ var BugAlert = dbHelpers.BugAlert;
 var bugAlertSchema = dbHelpers.bugAlertSchema;
 var User = dbHelpers.User;
 var userSchema = dbHelpers.userSchema;
+var townhallTopicSchema = dbHelpers.townhallTopicSchema;
 
 var app = express();
 var server = http.createServer(app);
@@ -45,8 +47,8 @@ io.on('connection', function (socket) {
 
 
 /* -- BEGIN mongo setup --*/
-var helprequests, bugalerts, users; // Collection names
-mongoose.connect('mongodb://localhost/test');
+var helprequests, bugalerts, townhallTopics, users; // Collection names
+mongoose.connect('mongodb://localhost/helpdesk');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
@@ -54,16 +56,12 @@ db.once('open', function() {
 	helprequests = mongoose.model('HelpRequest', helpReqSchema, 'helprequests');
 	bugalerts = mongoose.model('BugAlert', bugAlertSchema, 'bugalerts');
 	users = mongoose.model('User', userSchema, 'users');
+	townhallTopics = mongoose.model('TownhallTopic', townhallTopicSchema)
 });
 /* -- END mongo setup -- */
 
 
 // Help Request helper functions
-
-// var countOpenH = function(hrObj) {
-//   var conditions = { _id: hrObj._id },
-//   helprequests.find()
-// }
 
 var acceptHelpRequest = function(hrObj) {
 	var conditions = { _id: hrObj._id },
@@ -109,7 +107,6 @@ var addFeedbackSurvey = function(hrObj) {
 };
 
 /* -- BEGIN http server -- */
-
 
 app.post('/', function(req, res, next) {
 
@@ -202,15 +199,7 @@ app.post('/data/bugs/delete', function(req, res, next) {
 });
 
 
-// app.get('/data/users', function(req, res, next) {
-//  users.find(function(err, userEntries) {
-//      return res.send(userEntries);
-//  });
-// });
-
-
-
-  var usersList = [
+var usersList = [
     {firstname:"Andrew",lastname:"Howes",email:"none",gitHandle:"andrewhws",location:"Los Angeles, CA.",imgsrc:"../assets/student-avatars/0.jpg", isFellow: false, availability: 0},
     {firstname:"Aram",lastname:"Simonian",email:"none",gitHandle:"aram91",location:"Los Angeles, CA.",imgsrc:"../assets/student-avatars/1.jpg", isFellow: false, availability: 0},
     {firstname:"Casandra",lastname:"Silva",email:"silvacasandra@gmail.com",gitHandle:"casandrawith1s",location:"Los Angeles, CA.",imgsrc:"../assets/student-avatars/2.jpg", isFellow: false, availability: 0},
@@ -251,22 +240,6 @@ app.get('/data/users', function(req, res, next) {
 });
 
 
-// add new users?
-// app.post('/data/users', function(req, res, next) {
-//     // might be able to data validate client-side
-//     console.log('req.body: ' + JSON.stringify(req.body));
-//     var newUser = new User(req.body);
-//     newUser.save(function(err, newUser) {
-//         if(err) {
-//             return console.error(err);
-//         }
-//         // socketRef.emit('entry-added', { entryAdded: 'testing' })
-//         // newHelpRequest.speak();
-//         res.send(req.body);
-//     });
-// });
-
-
 // OR
 app.post('/data/bugalerts', function(req, res, next) {
     console.log('req.body: ' + JSON.stringify(req.body));
@@ -291,6 +264,80 @@ app.post('/data/users/delete', function(req, res, next) {
 	});
 });
 
+//townhall topics handlers
+app.get('/townhall/topics', function(req, res, next) {
+	console.log('In app.get townhall topics');
+	townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+		res.send({status: 200, data: topics});
+	});
+});
+
+app.post('/townhall/topics', function(req, res, next) {
+	console.log('In app.post townhall topics');
+	if (req.body.action === "remove") {
+		townhallTopics.remove({_id: req.body.topic_id}, function(err, topic) {
+			if (err) { throw error; }
+			townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+				res.send({status: 201, data: topics});
+			});
+		})
+	} else if(req.body.title) {
+		townhallTopics.findOne({title: req.body.title}, function(err, match){
+			if (err) console.error("Townhall topic post error: ", err);
+			else {
+				if (!match) {
+					townhallTopics.create(req.body).then(function(){
+						townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+							res.send({status: 201, data: topics});
+						});
+					});
+				} else {
+					res.status(400).send({status: 400, data: null, message: "Topic not found"});
+				}
+			}
+		});
+	}
+});
+
+app.post('/townhall/topics/topic/question', function(req, res, next) {
+	console.log("I'm inside app.post topic/question")
+	townhallTopics.findOne({_id: req.body.topic_id}, function(err, topic) {
+		if (err) console.error("Townhall topic question post error: ", err);
+		else {
+			if (topic) {
+				if (req.body.action === "save") {
+					var question = { title: req.body.title,
+						resources: req.body.resources,
+						votes: req.body.votes
+					}
+					topic.questions.push(question);
+				}
+				else {
+					var question = topic.questions.id(req.body.question_id);
+					if (req.body.action === "remove") {
+						question.remove();
+					}
+					if (req.body.action === "handleVote") {
+						question.votes = req.body.vote;
+					}
+					if (req.body.action === "handleResources") {
+						question.resources = req.body.resources;
+					}
+				}
+
+				topic.save(function(err) {
+					if (err) {
+						console.log("Topic save error");
+						throw err;
+					}
+					else { res.send({status: 201, data: topic.questions}); }
+				});
+			} else {
+				res.status(400).send({status: 400, data: null, message: "Topic not found"});
+			}
+		}
+	});
+});
 
 // static files
 app.use(express.static('./public'));
@@ -303,18 +350,19 @@ console.log('listening on port http://localhost:' + PORT);
 
 console.log('new users being addded?');
 
-usersList.forEach(function(item, i, array) {
+var usersInitialized = false;
+
+if (!usersInitialized) {
+  usersList.forEach(function (item, i, array) {
     var newUser = new User(item);
     newUser.save(function (err, obj) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log('-- New User --');
-        console.log(JSON.stringify(obj, null, 2));
+      if (err) {
+        return console.error(err);
+      }
+      console.log('-- New User --');
+      console.log(JSON.stringify(obj, null, 2));
     });
-});
-
-// app.listen(PORT, function() {
-// 	console.log('listening on port http://localhost:' + PORT);
-// });
+    usersInitialized = true;
+  });
+}
 /* -- END http server -- */
