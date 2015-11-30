@@ -2,13 +2,16 @@
 // Developer Console, https://console.developers.google.com
 var CLIENT_ID = '844715614532-imoanb7n7gprtu38pedhi9crsoidammh.apps.googleusercontent.com';
 var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+var EVENT_REQUEST_CRITERIA = {
+  'timeMin': moment().startOf('isoweek').add(-7, 'days').toISOString(),
+  'timeMax': moment().startOf('isoweek').add(-1, 'days').toISOString(),
+  'showDeleted': false,
+  'singleEvents': true,
+  'maxResults': 250,
+  'orderBy': 'startTime'
+};
 
-var week_events = {},
-    lookingForEvents = true,
-    currentWeek = [""];
-
-// var startDate = currentWeek[1],
-// var endDate = currentWeek[];
+var currentWeek = [""], week_events = {}, lookingForEvents = true, numOfDays = 6;
 
 var formatDate = function(dt, fmtType) {
   if (!dt) return "";
@@ -26,11 +29,14 @@ var formatDate = function(dt, fmtType) {
       return moment(dt).format("MM/DD/YYYY");
   }
 };
-var numOfDays = 6;
+
 for (var i = 0; i < numOfDays; i++) {
-  var date = formatDate(moment().startOf('isoweek').add(i - 7, 'days').toISOString());
-  currentWeek.push(date);
+  var date = moment().startOf('isoweek').add(i - 7, 'days').toISOString();
+  // if (i === 0) { EVENT_REQUEST_CRITERIA['timeMin'] = date; }
+  // if (i === numOfDays - 1) { EVENT_REQUEST_CRITERIA['timeMax'] = date; }
+  currentWeek.push(formatDate(date));
 }
+
 // console.log("Week: ", currentWeek)
 /**
  * Check if current user has authorized this application.
@@ -102,20 +108,10 @@ function listCalendars() {
  * the authorized user's calendar. If no events are found an
  * appropriate message is printed.
  */
- var _eventsRequestParameter = {
-   'timeMin': moment().startOf('isoweek').add(-7, 'days').toISOString(),
-   'timeMax': moment().startOf('isoweek').add(-1, 'days').toISOString(),
-   'showDeleted': false,
-   'singleEvents': true,
-   'maxResults': 250,
-   'orderBy': 'startTime'
- };
-
 function listUpcomingEvents(calendarId) {
-  //add calendar id to parameter Object
-  // console.log("Calendar Id: ", calendarId)
-  _eventsRequestParameter['calendarId'] = calendarId;
-  var request = gapi.client.calendar.events.list(_eventsRequestParameter);
+  EVENT_REQUEST_CRITERIA['calendarId'] = calendarId;
+  console.log(EVENT_REQUEST_CRITERIA)
+  var request = gapi.client.calendar.events.list(EVENT_REQUEST_CRITERIA);
 
   request.execute(function(resp) {
     var events = resp.items;

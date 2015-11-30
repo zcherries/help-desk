@@ -28,10 +28,6 @@
 //   }
 // };
 
-  console.log(_eventsRequestParameter['timeMin']);
-
-
-
   // var i = 0;
   // while (i < 6) {
   //   var date = _weekView.startDate.add(i, 'days').toISOString();
@@ -71,7 +67,7 @@ var Week = React.createClass({
 
   render: function() {
     var week_events = this.state.events;
-    // console.log("Calendar: ", week_events)
+    console.log("Week: ", currentWeek)
     return (
       <div>
         <div className="dates">
