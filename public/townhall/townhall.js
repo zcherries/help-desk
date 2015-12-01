@@ -5,7 +5,7 @@
 //Townhall component
 var Townhall = React.createClass({
   componentDidMount: function() {
-    this.getTopics();
+    this.getTopics(); //ajax call to retrieve topics from database
   },
 
   getInitialState: function() {
@@ -17,7 +17,7 @@ var Townhall = React.createClass({
       type: 'GET',
       url: this.props.url,
       success: function(response) {
-        this.setState({topics: response.data});
+        this.setState({topics: response.data}); //update state
       }.bind(this),
       error: function(xhr, status, err) {
         console.log("Error getting from: " + this.props.url, status, err.toString());
@@ -44,7 +44,7 @@ var Townhall = React.createClass({
     this.postTopic(topic);
   },
 
-  render: function() {
+  render: function() { //render retrieved topics from database
     var topics = this.state.topics.map(function(topic, idx) {
       return (
         <Topic key={idx} topicId={topic._id} text={topic.title}
@@ -66,15 +66,16 @@ var Townhall = React.createClass({
 //Topic component
 var Topic = React.createClass({
   getInitialState: function() {
-    return { questions: [] }
+    return { questions: [] } //array of a questions that belong to a topic
   },
 
   remove: function() {
     this.props.removeTopic({topic_id: this.props.topicId});
   },
 
+  //generate questions as a result of either the state being updated
+  //or the questions object being passed as a prop
   listQuestions: function() {
-    //var self = this;
     if (this.state.questions.length) {
       return this.state.questions.map(function(question, idx) {
         return (
@@ -94,13 +95,14 @@ var Topic = React.createClass({
   },
 
   postQuestion: function(question) {
-    //console.log(this.props.url + "?topicId=" + this.props.topicId)
+    //append topic id to question object in order to identify the topic a question belongs to
     question.topic_id = this.props.topicId;
     $.ajax({
       type: 'POST',
       url: 'topics/topic/question',
       data: question,
       success: function(response) {
+        console.log(response)
         this.setState({ questions: response.data });
       }.bind(this),
       error: function(xhr, status, err) {
@@ -108,7 +110,7 @@ var Topic = React.createClass({
       }.bind(this)
     });
   },
-
+  //action property is used in the backend to specify database operation
   removeQuestion: function(question) {
     question.action = "remove";
     this.postQuestion(question);
@@ -142,11 +144,13 @@ var Question = React.createClass({
     this.props.removeQuestion({question_id: this.props.q_id});
   },
 
+  //called when a question is upvoted
   upVote: function() {
     var count = this.props.children.votes + 1
     this.props.updateVote({question_id: this.props.q_id, vote: count});
   },
 
+  //called when a question is downvoted
   downVote: function() {
     var count = this.props.children.votes - 1
     if (count >= 0) {
@@ -154,9 +158,12 @@ var Question = React.createClass({
     }
   },
 
+  //called when textarea element loses focus
   updateResourceList: function(e) {
-    //var resources = (React.findDOMNode(this.refs.newText).value).split(/\r\n|\r|\n/g);
+    e.preventDefault();
+    //grab textarea content and put into array
     var resources = (e.target.value).split(/\r\n|\r|\n/g);
+    //update resources if value has changed
     for (var i = 0; i < resources.length; i++) {
       if (resources[i] !== this.props.children.resources[i]) {
         this.props.updateResources({question_id: this.props.q_id, resources: resources});
@@ -175,7 +182,7 @@ var Question = React.createClass({
           &nbsp;&nbsp;<button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.upVote} />
           &nbsp;<button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.downVote} />
         </span>
-        <textarea className="form-control" ref="newText"
+        <textarea className="form-control"
           defaultValue={this.props.children.resources} onBlur={this.updateResourceList}></textarea>
       </div>
     )
@@ -196,7 +203,6 @@ var TopicForm = React.createClass({
     e.preventDefault();
     var topic = this.state.topic.trim();
     if (topic) {
-      console.log(this.state.topic);
       this.props.postTopic({title: topic});
     }
     this.setState({topic: ''});
@@ -228,9 +234,9 @@ var QuestionForm = React.createClass({
     e.preventDefault();
     var question = this.state.question.trim();
     if (question) {
-      this.props.postQuestion({ title: question, resources: [], votes: 0, action: "save" })
+      this.props.postQuestion({ title: question, resources: [""], votes: 0, action: "save" })
+      this.setState({question: ''});
     }
-    this.setState({question: ''});
   },
 
   render: function() {
