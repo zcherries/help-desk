@@ -32,7 +32,6 @@
 					socket.emit('close-hr', helpRequestEntry);
 					break;
 				case 'closed':
-					alert('Why did you do that?!');
 					break;
 			}
 		},

@@ -24,13 +24,14 @@ app.use(bodyParser());
 
 // internal middleware
 app.use(serverHelpers.printReqInfo);
-
+var connections =  []
 /* -- BEGIN socket IO -- */
-var socketRef; // keep this for closure ;)
 io.on('connection', function (socket) {
 	console.log('new connection!');
-	socketRef = socket;
-	console.log('socketRef: ' + socketRef);
+	connections.push(socket.id)
+	connections.forEach(function(connection) {
+		console.log('socket: ' + connection);
+	});
 
   socket.on('accept-hr', function(hrObj) {
   	console.log(hrObj.name + ' has just accepted a HR.');
@@ -74,7 +75,7 @@ var acceptHelpRequest = function(hrObj) {
 	function callback (err, numAffected) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
-		socketRef.emit('fellow-accepted');
+		io.sockets.emit('fellow-accepted');
 	}
 };
 var closeHelpRequest = function(hrObj) {
@@ -89,7 +90,7 @@ var closeHelpRequest = function(hrObj) {
 		if (err) console.error(err);
 		console.log('successfully updated help request');
 		// send feedback survey
-		socketRef.broadcast.emit('fellow-closed', hrObj);
+		io.sockets.emit('fellow-closed', hrObj);
 	}
 };
 var addFeedbackSurvey = function(hrObj) {
@@ -101,9 +102,9 @@ var addFeedbackSurvey = function(hrObj) {
 
 	function callback (err, numAffected) {
 		if (err) console.error(err);
-        console.log('successfully updated help request');
-        socketRef.emit('fellow-closed');
-    }
+		console.log('successfully updated help request');
+		io.sockets.emit('fellow-closed');
+	}
 };
 
 /* -- BEGIN http server -- */
@@ -119,7 +120,11 @@ app.post('/', function(req, res, next) {
 	var newHelpRequest = new HelpRequest(req.body);
 	newHelpRequest.save(function(err, newHelpRequest) {
 		if(err) return console.error(err);
+<<<<<<< HEAD
 		socketRef.emit('entry-added', { entryAdded: 'testing' });
+=======
+		io.sockets.emit('entry-added', { entryAdded: 'testing' })
+>>>>>>> [refactor] socket.io functionality
 		newHelpRequest.speak();
 		res.send(req.body);
 	});
@@ -157,6 +162,7 @@ app.get('/data/id=*', function(req, res, next) {
 
 // delete Help Requests
 app.post('/data/delete', function(req, res, next) {
+<<<<<<< HEAD
     console.log('req.body: ' + JSON.stringify(req.body));
     var id = req.body.id;
     helprequests.findById(id).remove(function(err, removed) {
@@ -164,6 +170,15 @@ app.post('/data/delete', function(req, res, next) {
         console.log('successfully removed: ' + removed);
         res.send(req.body);
     });
+=======
+	console.log('req.body: ' + JSON.stringify(req.body));
+	var id = req.body.id;
+	helprequests.findById(id).remove(function(err, removed) {
+		io.sockets.emit('entry-deleted', removed);
+		console.log('successfully removed: ' + removed);
+		res.send(req.body);
+	});
+>>>>>>> [refactor] socket.io functionality
 });
 
 // retrieve BugAlerts
@@ -181,7 +196,11 @@ app.post('/data/bugs', function(req, res, next) {
 	var newBugAlert = new BugAlert(req.body);
 	newBugAlert.save(function(err, newBugAlert) {
 		if(err) return console.error(err);
+<<<<<<< HEAD
 		socketRef.emit('bugalert-added', { entryAdded: 'testing' });
+=======
+		io.sockets.emit('bugalert-added', { entryAdded: 'testing' })
+>>>>>>> [refactor] socket.io functionality
 		newBugAlert.speak();
 		res.send(req.body);
 	});
@@ -257,8 +276,13 @@ app.post('/data/bugalerts', function(req, res, next) {
 app.post('/data/users/delete', function(req, res, next) {
 	console.log('req.body: ' + JSON.stringify(req.body));
 	var id = req.body.id;
+<<<<<<< HEAD
 	users.findById(id).remove(function(err, removed) {
 		// socketRef.emit('entry-deleted', removed);
+=======
+	bugalerts.findById(id).remove(function(err, removed) {
+		io.sockets.emit('bugalert-deleted', removed);
+>>>>>>> [refactor] socket.io functionality
 		console.log('successfully removed: ' + removed);
 		res.send(req.body);
 	});
