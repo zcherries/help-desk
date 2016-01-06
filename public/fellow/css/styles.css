@@ -8,14 +8,52 @@
 	src:url('../../student/css/BebasNeue.otf');
 }
 
+li {
+	color: #888;
+}
+
+.help-text {
+  font-family:BebasNeue;
+  color:#888;
+  font-size: 75px;
+  text-align:center;
+}
+
+#dropdown {
+	position:absolute;
+}
+
+a {
+	color:black;
+	text-decoration:none;
+	font-family:BebasNeue;
+	font-size:24px;
+	padding-left:7px;
+	padding-right:7px;
+}
+
+.org-list {
+	color:black;
+}
+
+a:hover {
+	text-decoration:none;
+	color:#cccccc;
+}
+
+.dropdown-toggle {
+	padding-left:7px;
+	font-family:BebasNeue;
+	font-size: 24px;
+	color:#748583;
+}
+
 .bug-container {
 
 }
 
 #bug-compose {
-	margin-left: 700px;
-	margin-top: 550px;
-	position:absolute;
+
 }
 .form-control {
 	width:350px;
@@ -23,10 +61,14 @@
 
 #submit {
 	margin-top:10px;
-	margin-left:300px;
+	margin-left:280px;
+	font-family:Gotham-Book;
+	height:30px;
+	width:70px;
+	border-radius: 20px;
+	background-color:#888;
+	color:#f8f8f8;
 	border:none;
-	color:white;
-	background-color:#9eb4b1;
 }
 
 .text-center2 {
@@ -69,7 +111,7 @@
 
 @keyframes fade {
 	from {background-color:#fbfdd5;}
-	to{background-color:#fafbe3;}
+	to{background-color:#fcfcf0;}
 }
 
 #is-helping {
@@ -88,6 +130,23 @@
 	font-family:Gotham-Book;
 }
 
+#input-submit {
+	margin-left: 5px;
+	border-radius: 20px;
+	background-color:#888;
+	color:#f8f8f8;
+	border:none;
+
+#is-available {
+	font-family: Gotham-Book;
+	background-color:#d8fdd5;
+}
+
+#is-gone {
+	font-family: Gotham-Book;
+	background-color:#d5dadf;
+}
+
 .tag {
 	margin: 0 2px;
 	font-weight: bolder;
@@ -96,4 +155,3 @@
 	background-color:#fff;
 	color:#262626;
 }
-

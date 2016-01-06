@@ -11,12 +11,33 @@ body {
 	font-family:Gotham-Book;
 }
 
-.navbar {
-	margin: 0 auto;
+#today-sprint {
+	font-family:BebasNeue;
+	font-size:50px;
+	color:black;
+}
+#mock {
+	border:#cccccc;
+}
+
+#table-contents {
+	width:700px;
+	height:500px;
+}
+
+#table-contents-pic {
+	width:700px;
+	height:100px;
+}
+#todays-sprint {
+	width:700px;
+	height:100px;
 }
 
 #dropdown {
 	position:absolute;
+	background-color:white;
+	list-style:none;
 }
 
 a {
@@ -45,11 +66,30 @@ a:hover {
 }
 
 .container {
-	/*width: 100px;*/
+	margin: 0 auto;
+/*	background-image: url('tableofcontents.png')*/
+}
+
+/*asldfkj*/
+
+.sidebar {
+	/*display:none;*/
+	/*margin-top:-1000px;*/
+	/*margin-left:-1000px;*/
+}
+
+/*.placeholder {
+	width:120px;
+	height:80px;
+}*/
+
+#place-img {
+	width:70px;
+	height:50px;
 }
 
 #submit {
-	margin-left:280px;
+	margin-left:320px;
 	font-family:Gotham-Book;
 	background-color:#9eb4b1;
 	color:white;
@@ -61,17 +101,17 @@ a:hover {
 }
 
 #header {
-	margin-left:20px;
+	text-align:center;
+	/*margin-left:20px;*/
 	color:#748583;
-	/*color:#9eb4b1;*/
 	font-family:BebasNeue;
 	font-size:50px;
 }
 
 #header2{
-	margin-left:40px;
+	text-align:center;
+	/*margin-left:40px;*/
 	font-size:35px;
-	/*color:#748583;*/
 	color:#9eb4b1;
 	margin-top:0px;
 	font-family:BebasNeue;
@@ -85,6 +125,7 @@ a:hover {
 
 #shoutout-text {
 	font-family:Gotham-Book;
+	margin-left:40px;
 	width:350px;
 }
 
@@ -163,18 +204,17 @@ a:hover {
 }
 
 #request-submit {
-	width: 140px;
-	height:40px;
-	background-color:#9eb4b1;
-	color:white;
+	border-radius: 20px;
+	background-color:#888;
+	color:#f8f8f8;
 	border:none;
-	margin-left:157px;
+	position: absolute;
+	right: 0px;
+	margin-right: 15px;
 }
 
 #input-submit {
-	background-color:#9eb4b1;
-	color:white;
-	border:none;
+
 }
 
 .submit-tag {
@@ -214,10 +254,26 @@ a:hover {
 
 }
 
+/*#navbar {
+	position:static;
+}
+*/
+#align-left {
+	position:absolute;
+	/*float:left;*/
+}
+
 .help-text {
 	font-family:BebasNeue;
-	color:#748583;
+	color:#888;
 	font-size: 75px;
+	text-align:center;
+}
+
+.fellow-text {
+	font-family:BebasNeue;
+	color:#748583;
+	font-size: 35px;
 	/*padding-left:135px;*/
 	text-align:right;
 }

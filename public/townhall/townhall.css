@@ -1,0 +1,81 @@
+/* - My styles - */
+body {
+  font-family: BebasNeue;
+}
+
+.townhall {
+  width: 70%;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+}
+
+.townhall h1 {
+  font-size: 48px;
+  text-align: center
+}
+
+.topic {
+  width: 100%;
+  border-top: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+.topic h3 {
+  font-size: 32px;
+  text-align: center;
+}
+
+.topic_form input, .question_form input, textarea {
+  font-family: Helvetica;
+}
+
+.topic_form {
+  text-align: center;
+}
+
+.topic_form input[type='text'] {
+  width: 20%;
+}
+
+.question {
+  width: 80%;
+  margin: 15px auto;
+  /*border-bottom: 1px solid #ccc;*/
+}
+
+.question_form {
+  text-align: center;
+  width: 80%
+  margin: 0 auto;
+}
+
+.question_form input[type="text"] {
+  width: 50%;
+}
+
+span.question_title {
+  font-size: 24px;
+  /*font-weight: 500;*/
+  color: teal;
+}
+
+span.votes {
+  display: inline-block;
+  font-size: 18px;
+  /*font-weight: 700;*/
+  color: teal;
+  float: right;
+  clear: right;
+}
+
+span.votes button {
+  top: -5px;
+}
+
+.glyphicon-remove {
+  margin-left: 5px;
+  padding: 1px;
+  font-size: 10px;
+  background-color: #888;
+  border-color: #888;
+}

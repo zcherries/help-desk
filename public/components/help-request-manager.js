@@ -1,7 +1,20 @@
 (function() {
+
+	var fellowList = [
+	{firstname:"Thomas",lastname:"Greenhalgh",email:"thomas.greenhalgh@gmail.com",gitHandle:"tgreenhalgh",location:"Santa Monica, CA.",imgsrc:"../assets/fellow-avatars/thomas.jpeg", isFellow: true, availability: 1},
+    {firstname:"Joe",lastname:"Nayigiziki",email:"joseph.nayigiziki@makersquare.com",gitHandle:"Nayigiziki",location:"Santa Monica, CA.",imgsrc:"../assets/fellow-avatars/joe_n.jpeg", isFellow: true, availability: 1},
+    {firstname:"Melinda",lastname:"Bernardo",email:"melindabernardo@gmail.com",gitHandle:"melindabernardo",location:"Los Angeles, CA.",imgsrc:"../assets/fellow-avatars/melinda.jpeg", isFellow: true, availability: 2},
+    {firstname:"Ricky",lastname:"Walker",email:"rickwalk45@gmail.com",gitHandle:"Unconfined",location:"Baton Rouge, LA.",imgsrc:"../assets/fellow-avatars/ricky_w.jpeg", isFellow: true, availability: 2},
+    {firstname:"Irving",lastname:"Barajas",email:"irvingb232@gmail.com",gitHandle:"irvingaxelb",location:"Santa Monica, CA.",imgsrc:"../assets/fellow-avatars/irving.jpeg", isFellow: true, availability: 3}
+	];
+
+	var fellowIdx = Math.floor(Math.random() * fellowList.length);
+
 	var fellowInfo = {
-		name: 'Joe Nayigiziki'
+		name: fellowList[fellowIdx].firstname + ' ' + fellowList[fellowIdx].lastname
 	};
+
+	console.log(fellowInfo);
 
 	var socket = io();
 	// socket listeners are found in componentWillMount
@@ -19,7 +32,6 @@
 					socket.emit('close-hr', helpRequestEntry);
 					break;
 				case 'closed':
-					alert('Why did you do that?!');
 					break;
 			}
 		},
@@ -62,7 +74,7 @@
 	var HelpRequestManager = React.createClass({
 		parentHandleClick: function(data) {
 			// console.log('Fellow accepted HR');
-			// this.getMongo();
+			 this.getMongo();
 		},
 		getMongo: function() {
 			$.get(this.props.source, function(data) {

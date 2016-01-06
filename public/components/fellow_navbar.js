@@ -1,22 +1,24 @@
+var socket = io();
+
 //Component for User profile
 var NavUser = React.createClass({
   render: function() {
     var placeholder = this.props.data;
     var placeholderUrls = this.props.data[0].urls;
     var userListItems = placeholderUrls.map(function(item,idx) {
-      return (<MenuItem key={idx} href={item.link}>{item.text}</MenuItem>);
+      return (<MenuItem key={idx} href={item.link}>{item.text} </MenuItem>);
     });
     return (
-      <NavDropdown eventKey={3} title={"Welcome, " + placeholder[0].username} id="basic-nav-dropdown">
-        {userListItems}
-      </NavDropdown>
+        <NavDropdown eventKey={3} title={"Welcome, " + placeholder[0].username} id="basic-nav-dropdown">
+          {userListItems}
+        </NavDropdown>
     );
   }
 });
 
 var userData = [
   {id: 1,
-    username: 'Student',
+    username: 'Fellow',
     slack: '#',
     github: '#',
     urls: [{text:'My Cohort',link:'#'},{text:'slackIt',link:'#'},{text:'gitHubIt',link:'#'},{text:'reactIt',link:'#'},{text:'nodeIt',link:'#'}]
@@ -30,11 +32,11 @@ var NavOrg = React.createClass({
   },
   render: function() {
     var orgListItems = this.props.data.map(function(item) {
-      return <span key={item.id}><a href={item.link} target={item.target} >{item.title}</a></span>;
+      return <span key={item.id}><a href={item.link} target={item.target} /*onClick={HelpRequestManager.show}*/>{item.title}</a></span>;
     });
     return (
       <div>
-        <div className='org-list'>{orgListItems}<span><a href="#" >Help Desk</a></span></div>
+        <div className='org-list'>{orgListItems}<span><a href="#" /*onClick={helpReq.show}*/>Help Desk</a></span></div>
       </div>
     )
   }
@@ -56,7 +58,7 @@ var NavbarHD = React.createClass({
       <Navbar fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="/calendar/#">Help Desk</a>
+            <a href="/fellow/#">Help Desk Manager</a>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
@@ -69,14 +71,14 @@ var NavbarHD = React.createClass({
             <NavItem eventKey={2} href="/calendar/#">Calendar</NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem eventKey={1} onClick={this.toggle}>Toggle Help Desk</NavItem>
+            <NavItem eventKey={1} onClick={this.toggle}>Toggle Bug Log</NavItem>
             <NavUser data={userData} />
           </Nav>
         </Navbar.Collapse>
       </Navbar>
 
       <Menu ref="left" alignment="left">
-        <HelpRequestTab />
+        <BugLogContainer dataEndPoint={ dataEndPoint } />
       </Menu>
     </div>;
   }
@@ -141,94 +143,96 @@ var _formData = {
   feedback: 'empty'
 };
 
-var Tag = React.createClass({
-  removeSelf: function(e) {
-    this.props.parentRemoveTag(this.refs.tagText.innerHTML);
+var author = 'Joe Nayigiziki';
+var dataEndPoint = 'http://localhost:8000/data/bugalerts';
+
+
+var Log = React.createClass({
+
+  render: function() {
+    return (
+      <ul>
+        {this.props.bugs.map((bug, taskIndex) =>
+          <li key={taskIndex} onClick={this.props.remove} value={taskIndex} data={bug._id}>
+            {bug.author + ': ' + bug.content}
+          </li>
+        )}
+      </ul>
+    );
+  }
+});
+
+var BugCompose = React.createClass({
+  retrieveFormData: function() {
+    return this.refs.bugMessage.value;
+  },
+  handleSubmit: function(e) {
+    e.preventDefault();
+    var postData = {
+      author: author,
+      content: this.retrieveFormData(),
+      timestamp: new Date()
+    };
+    $.post(dataEndPoint, postData, function(data) {
+      console.log('server response: ' + data);
+    });
   },
   render: function() {
     return (
-      <div className="chip" tagName={ this.props.text } onClick={ this.removeSelf }>
-        <span ref="tagText">{ this.props.text }</span><i className='material-icons'>close</i>
+      <div id="bug-compose">
+        <form method="post" onSubmit={ this.handleSubmit }>
+          <textarea ref="bugMessage" className="form-control" rows="3" placeholder="Describe the bug..."></textarea>
+          <input type="submit" id='submit' value="submit" />
+        </form>
       </div>
     );
   }
 });
 
-var TagContainer = React.createClass({
-  render: function () {
-    var tagNodes = this.props.data.map(function(tag, idx) {
-      return (
-        <Tag text={ tag } parentRemoveTag={ this.props.parentRemoveTag } key={ idx } />
-      );
-    }.bind(this))
-    return (
-      <div className="taglist">
-        { tagNodes }
-      </div>
-    );
-  }
-});
-
-var TagSubmit = React.createClass({
+var BugLogContainer = React.createClass({
   getInitialState: function() {
     return {
-      inputTags: []
+      bugs: []
     };
   },
-  clearForms: function() {
-    this.refs.tag.value = '';
-  },
-  parentRemoveTag: function(tagText) {
-    var inputTags = this.state.inputTags.slice();
-    var tagIdx = inputTags.indexOf(tagText);
-    inputTags.splice(tagIdx, 1)
-    this.setState({
-      inputTags: inputTags
+
+  remove: function (ev) {
+    ev.preventDefault();
+    var id = ev.target.data;
+    console.log("remove clicked value:",ev.target.data);
+    $.post('/data/bugs/delete', id);
+    this.setState(function (state) {
+      state.bugs.splice(ev.target.value,1);
+      return {bugs: state.bugs};
     });
   },
-  handleSubmit: function (e) {
-    e.preventDefault();
-    var tagText = this.refs.tag.value.trim();
-    _formData.tags.push(tagText);
-    this.setState({
-      inputTags: this.state.inputTags.concat(tagText)
-    });
-    this.clearForms();
-  },
-  render: function () {
-    return (
-      <div className='submit-tags'>
-        <form className="submit-tag" onSubmit={this.handleSubmit} >
-          <input type="text" id='input' autoComplete="off" placeholder="Enter tags" ref="tag"/>
-          <input type="submit" id='input-submit' value="Add Tags" />
-        </form>
-        <TagContainer ref="tagContain" data={ this.state.inputTags } parentRemoveTag={ this.parentRemoveTag } />
-      </div>
-    );
-  }
-});
 
-var HelpRequestTab = React.createClass({
-  clearForm: function() {
-    this.refs.content.value = '';
-  },
-  sendRequest: function(e) {
-    e.preventDefault();
-    _formData.content = this.refs.content.value.trim()
-    _formData.timesubmitted = new Date();
-    $.post('/', _formData, function(data) {
-      console.log('successfully posted! data: ' + JSON.stringify(data));
-      this.clearForm();
+  loadBugsFromServer: function() {
+    console.log("data endpoint",this.props.dataEndPoint);
 
+    $.get(this.props.dataEndPoint, function(data) {
+      this.setState({
+        bugs: data
+      });
+    }.bind(this));
+    // adds to state
+  },
+  componentWillMount: function() {
+    // make GET request to DB to load data
+    this.loadBugsFromServer();
+  },
+  componentDidMount: function() {
+    // listen to DB to changes
+    socket.on('new-bugalert', function(data) {
+      this.loadBugsFromServer();
     }.bind(this));
   },
   render: function() {
-    return (
-      <div className="help">
-        <div className='help-text'>Help</div>
-        <textarea ref="content" className="request-text form-control" rows="3" id="content" placeholder="What do you need help on?"></textarea>
-        <TagSubmit /><br/>
-        <button id='request-submit' onClick={this.sendRequest}>Submit Help Request</button>
+    return(
+      <div className='bug-container'>
+        <div className='help-text'>Bug Log</div>
+        <BugCompose dataEndPoint={ this.props.dataEndPoint } />
+        <Log bugs={ this.state.bugs } remove={this.remove} />
       </div>
     );
   }
