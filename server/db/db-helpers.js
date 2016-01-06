@@ -23,16 +23,6 @@ var bugAlertSchema = module.exports.bugAlertSchema = mongoose.Schema({
 });
 
 var userSchema = module.exports.userSchema = mongoose.Schema({
-<<<<<<< Updated upstream
-	firstname: String,
-	lastname: String,
-	email: String,
-	gitHandle: String,
-	location: String,
-	imgsrc: String,
-	isFellow: Boolean,
-	availability: Number
-=======
   firstname: String,
   lastname: String,
   email: String,
@@ -41,7 +31,6 @@ var userSchema = module.exports.userSchema = mongoose.Schema({
   imgsrc: String,
   isFellow: Boolean,
   availability: Number
->>>>>>> Stashed changes
 });
 
 var questionSchema = module.exports.questionSchema = mongoose.Schema({

@@ -8,7 +8,7 @@ Our team's goal is to revamp Makersquare's current Help Desk application. Our so
 ```
 # from the project root directory...
 $ mongod
-$ nodemon server/server.js
+$ npm start
 ```
 
 ####Some Notes:
