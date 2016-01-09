@@ -44,7 +44,18 @@ io.on('connection', function (socket) {
   	console.log(JSON.stringify(hrObj));
   	closeHelpRequest(hrObj);
   });
+	socket.on('user_typing_pause', function(textAreaObj) {
+		socket.broadcast.emit('new_text', textAreaObj);
+	});
 });
+
+// var alter_townhall_send = function(req, res, next) {
+// 	res.sendEmit = function(data) {
+// 		io.sockets.emit('topic_CUD');
+// 		this.send(data);
+// 	};
+// 	next();
+// }
 /* -- END socket IO -- */
 
 
@@ -251,9 +262,10 @@ app.post('/townhall/topics', function(req, res, next) {
 		townhallTopics.remove({_id: req.body.topic_id}, function(err, topic) {
 			if (err) { throw error; }
 			townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+				io.sockets.emit('topic_CUD');
 				res.send({status: 201, data: topics});
 			});
-		})
+		});
 	} else if(req.body.title) {
 		townhallTopics.findOne({title: req.body.title}, function(err, match){
 			if (err) console.error("Townhall topic post error: ", err);
@@ -261,6 +273,7 @@ app.post('/townhall/topics', function(req, res, next) {
 				if (!match) {
 					townhallTopics.create(req.body).then(function(){
 						townhallTopics.find({}).sort({ _id: -1 }).then(function(topics) {
+							io.sockets.emit('topic_CUD');
 							res.send({status: 201, data: topics});
 						});
 					});
@@ -303,7 +316,10 @@ app.post('/townhall/topics/topic/question', function(req, res, next) {
 						console.log("Topic save error");
 						throw err;
 					}
-					else { res.send({status: 201, data: topic.questions}); }
+					else {
+						io.sockets.emit('topic_CUD');
+						res.send({status: 201, data: topic.questions});
+					}
 				});
 			} else {
 				res.status(400).send({status: 400, data: null, message: "Topic not found"});

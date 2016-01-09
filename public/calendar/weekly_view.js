@@ -18,6 +18,15 @@ var Calendar = React.createClass({
   },
 
   componentDidMount: function() {
+    var $calendars = $('.calendars');
+    // console.log($calendars)
+    $('body').on('change', $calendars, function(e) {
+      e.preventDefault();
+      console.log('Selected change')
+      listUpcomingEvents($('.calendars option:selected').val())
+      this.lookForEvents();
+    }.bind(this));
+
     this.lookForEvents();
   },
   //checks for call to calendar api to finish running
