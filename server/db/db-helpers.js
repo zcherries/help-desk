@@ -23,14 +23,14 @@ var bugAlertSchema = module.exports.bugAlertSchema = mongoose.Schema({
 });
 
 var userSchema = module.exports.userSchema = mongoose.Schema({
-	firstname: String,
-	lastname: String,
-	email: String,
-	gitHandle: String,
-	location: String,
-	imgsrc: String,
-	isFellow: Boolean,
-	availability: Number
+  firstname: String,
+  lastname: String,
+  email: String,
+  gitHandle: String,
+  location: String,
+  imgsrc: String,
+  isFellow: Boolean,
+  availability: Number
 });
 
 var questionSchema = module.exports.questionSchema = mongoose.Schema({

@@ -1,15 +1,19 @@
 //Towhnall is a parent component to the Topic and Topic form components
 //Topic is a parent component to Questions and Question Form components
 //Each question has a vote count and listing of resources
-
 //Townhall component
 var Townhall = React.createClass({
   componentDidMount: function() {
-    this.getTopics();
+    this.getTopics(); //ajax call to retrieve topics from database
+    socket.on('topic_CUD', function() {
+      this.getTopics();
+    }.bind(this));
   },
 
   getInitialState: function() {
-    return { topics: [] }
+    return {
+      topics: []
+    }
   },
 
   getTopics: function() {
@@ -17,10 +21,9 @@ var Townhall = React.createClass({
       type: 'GET',
       url: this.props.url,
       success: function(response) {
-        this.setState({topics: response.data});
+        this.setState({topics: response.data}); //update state
       }.bind(this),
       error: function(xhr, status, err) {
-        console.log("Error getting from: " + this.props.url, status, err.toString());
       }.bind(this)
     });
   },
@@ -34,7 +37,6 @@ var Townhall = React.createClass({
         this.setState({topics: response.data});
       }.bind(this),
       error: function(xhr, status, err) {
-        console.log("Error posting to: " + this.props.url, status, err.toString());
       }.bind(this)
     });
   },
@@ -44,7 +46,7 @@ var Townhall = React.createClass({
     this.postTopic(topic);
   },
 
-  render: function() {
+  render: function() { //render retrieved topics from database
     var topics = this.state.topics.map(function(topic, idx) {
       return (
         <Topic key={idx} topicId={topic._id} text={topic.title}
@@ -66,19 +68,22 @@ var Townhall = React.createClass({
 //Topic component
 var Topic = React.createClass({
   getInitialState: function() {
-    return { questions: [] }
+    return { questions: [] } //array of a questions that belong to a topic
   },
 
   remove: function() {
     this.props.removeTopic({topic_id: this.props.topicId});
   },
 
+  //generate questions as a result of either the state being updated
+  //or the questions object being passed as a prop
   listQuestions: function() {
-    //var self = this;
     if (this.state.questions.length) {
       return this.state.questions.map(function(question, idx) {
         return (
-          <Question key={idx} q_id={question._id}
+          <Question
+            topicId={this.props.topicId}
+            key={idx} q_id={question._id}
             removeQuestion={this.removeQuestion} updateVote={this.updateVote}
             updateResources={this.updateResources}>{question}</Question>
         )
@@ -86,7 +91,9 @@ var Topic = React.createClass({
     }
     return this.props.questions.map(function(question, idx) {
       return (
-        <Question key={idx} q_id={question._id}
+        <Question
+          topicId={this.props.topicId}
+          key={idx} q_id={question._id}
           removeQuestion={this.removeQuestion} updateVote={this.updateVote}
           updateResources={this.updateResources}>{question}</Question>
       )
@@ -94,7 +101,7 @@ var Topic = React.createClass({
   },
 
   postQuestion: function(question) {
-    //console.log(this.props.url + "?topicId=" + this.props.topicId)
+    //append topic id to question object in order to identify the topic a question belongs to
     question.topic_id = this.props.topicId;
     $.ajax({
       type: 'POST',
@@ -104,11 +111,10 @@ var Topic = React.createClass({
         this.setState({ questions: response.data });
       }.bind(this),
       error: function(xhr, status, err) {
-        console.log("Error posting to: " + xhr, status, err.toString());
       }.bind(this)
     });
   },
-
+  //action property is used in the backend to specify database operation
   removeQuestion: function(question) {
     question.action = "remove";
     this.postQuestion(question);
@@ -138,15 +144,42 @@ var Topic = React.createClass({
 
 //Question Component
 var Question = React.createClass({
+  getInitialState: function() {
+    return {
+      textAreaValue: this.props.children.resources
+    };
+  },
+
+  componentDidMount: function() {
+    socket.on('new_text', function(data) {
+      if (data.q_id === this.props.q_id && data.topicId === this.props.topicId) {
+        this.setState({ textAreaValue: data.content });
+      }
+    }.bind(this));
+  },
+
+  inform_clients: function(e){
+    this.setState({textAreaValue: e.target.value});
+    var resources = (e.target.value).split(/\r\n|\r|\n/g);
+    var data = {
+      q_id: this.props.q_id,
+      topicId: this.props.topicId,
+      content: resources
+    };
+     socket.emit('user_typing_pause', data);
+  },
+
   remove: function() {
     this.props.removeQuestion({question_id: this.props.q_id});
   },
 
+  //called when a question is upvoted
   upVote: function() {
     var count = this.props.children.votes + 1
     this.props.updateVote({question_id: this.props.q_id, vote: count});
   },
 
+  //called when a question is downvoted
   downVote: function() {
     var count = this.props.children.votes - 1
     if (count >= 0) {
@@ -154,9 +187,8 @@ var Question = React.createClass({
     }
   },
 
-  updateResourceList: function(e) {
-    //var resources = (React.findDOMNode(this.refs.newText).value).split(/\r\n|\r|\n/g);
-    var resources = (e.target.value).split(/\r\n|\r|\n/g);
+  updateResources: function(e) {
+    var resources = (this.state.textAreaValue).split(/\r\n|\r|\n/g);
     for (var i = 0; i < resources.length; i++) {
       if (resources[i] !== this.props.children.resources[i]) {
         this.props.updateResources({question_id: this.props.q_id, resources: resources});
@@ -175,8 +207,11 @@ var Question = React.createClass({
           &nbsp;&nbsp;<button className="btn btn-success btn-sm glyphicon glyphicon-thumbs-up" onClick={this.upVote} />
           &nbsp;<button className="btn btn-warning btn-sm glyphicon glyphicon-thumbs-down" onClick={this.downVote} />
         </span>
-        <textarea className="form-control" ref="newText"
-          defaultValue={this.props.children.resources} onBlur={this.updateResourceList}></textarea>
+        <textarea
+          className="form-control"
+          value={this.state.textAreaValue}
+          onChange={this.inform_clients}
+          onBlur={this.updateResources} />
       </div>
     )
   }
@@ -196,7 +231,6 @@ var TopicForm = React.createClass({
     e.preventDefault();
     var topic = this.state.topic.trim();
     if (topic) {
-      console.log(this.state.topic);
       this.props.postTopic({title: topic});
     }
     this.setState({topic: ''});
@@ -229,8 +263,8 @@ var QuestionForm = React.createClass({
     var question = this.state.question.trim();
     if (question) {
       this.props.postQuestion({ title: question, resources: [""], votes: 0, action: "save" })
+      this.setState({question: ''});
     }
-    this.setState({question: ''});
   },
 
   render: function() {
