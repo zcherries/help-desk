@@ -12,7 +12,6 @@ var EVENT_REQUEST_CRITERIA = {
   'orderBy': 'startTime'
 };
 
-//
 var week_events = {}, _lookingForEvents = true, numOfDays = 6;
 
 //format date
@@ -86,15 +85,26 @@ function loadCalendarApi() {
 
 function listCalendars() {
   var calendarId = "";
+  var calendars = $('<select />', {class: 'calendars'});
+  // var calendars = $('select#calendars');
   var request = gapi.client.calendar.calendarList.list();
   request.execute(function(resp) {
+    // console.log('Calendars: ', resp.items);
     for (var i = 0; i < resp.items.length; i++) {
-      if (resp.items[i].id.indexOf("makersquare.com") > -1
-        && resp.items[i].id.indexOf("@group") > -1) {
-          calendarId = resp.items[i].id;
-      }
+      // console.log('Calendar Id: ', resp.items[i].id);
+      $('<option />', {value: resp.items[i].id,
+        text: resp.items[i].summary
+      }).appendTo(calendars);
+
+      $('#calendar').prepend(calendars);
+      // calendars.push(resp.items[i].id);
+      // if (resp.items[i].id.indexOf("makersquare.com") > -1
+      //   && resp.items[i].id.indexOf("@group") > -1) {
+      //     calendarId = resp.items[i].id;
+      // }
     }
-    listUpcomingEvents(calendarId);
+    // listUpcomingEvents(calendarId);
+    listUpcomingEvents($('.calendars option:selected').val())
   });
 };
 
@@ -104,12 +114,17 @@ function listCalendars() {
  * appropriate message is printed.
  */
 function listUpcomingEvents(calendarId) {
+  if (!calendarId) {
+    _lookingForEvents = false;
+    appendPre('No events found.');
+    return;
+  }
   //add calendar id property before making request to calendar api
   EVENT_REQUEST_CRITERIA['calendarId'] = calendarId;
   var request = gapi.client.calendar.events.list(EVENT_REQUEST_CRITERIA);
   request.execute(function(resp) {
     var events = resp.items;
-    if (events.length > 0) {
+    if (events && events.length > 0) {
       for (i = 0; i < events.length; i++) {
         var event = events[i];
         if (event.start.dateTime) { //only grab events for which there is a start.dateTime property
